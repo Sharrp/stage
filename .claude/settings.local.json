@@ -9,7 +9,14 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Set up Next.js 14 project\n\n- Add TypeScript configuration\n- Add App Router structure\n- Add Tailwind CSS with PostCSS\n- Add ESLint configuration\n- Add homepage with \"Under construction\" message\n- Add README with project documentation\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(npm run dev:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix: Replace next.config.ts with next.config.mjs\n\nNext.js 14 doesn''t support TypeScript config files.\nChanged to .mjs format which is supported.\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix: Replace next.config.ts with next.config.mjs\n\nNext.js 14 doesn''t support TypeScript config files.\nChanged to .mjs format which is supported.\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(docker build:*)",
+      "Bash(test:*)",
+      "Bash(docker run:*)",
+      "Bash(docker rm:*)",
+      "Bash(/Users/5hrp/.local/g/google-cloud-sdk/bin/gcloud run services describe:*)",
+      "Bash(git commit:*)",
+      "Bash(npm test)"
     ]
   }
 }
