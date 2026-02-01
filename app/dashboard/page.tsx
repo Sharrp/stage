@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import LogoutButton from './LogoutButton'
+import QuackCounter from '@/components/QuackCounter'
+import { getQuackStats } from '@/lib/supabase/queries'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -13,26 +15,50 @@ export default async function DashboardPage() {
     redirect('/')
   }
 
+  // Fetch quack stats for the user
+  let quackStats = null
+  try {
+    quackStats = await getQuackStats(user.id)
+  } catch (error) {
+    console.error('Failed to fetch quack stats:', error)
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#111] px-4">
-      <div className="w-full max-w-2xl">
-        <h1 className="text-4xl font-bold text-[#fb607f] text-center mb-8">Dashboard</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 px-4">
+      <div className="w-full max-w-2xl space-y-8">
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="mb-2 text-4xl font-bold text-gray-900">Welcome to Quack! 🦆</h1>
+          <p className="text-lg text-gray-600">
+            Signed in as <span className="font-mono text-sm">{user.email}</span>
+          </p>
+        </div>
 
-        <div className="p-6 space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold text-[#fb607f] mb-4">Welcome!</h2>
-            <p className="text-white">You are logged in as:</p>
-            <p className="text-white font-mono mt-1">{user.email}</p>
-          </div>
+        {/* Quack Counter */}
+        <QuackCounter initialStats={quackStats} />
 
-          <div className="pt-4">
-            <p className="text-white text-sm mb-2">User ID:</p>
-            <p className="text-white font-mono text-xs break-all">{user.id}</p>
-          </div>
+        {/* Stats Info */}
+        <div className="rounded-lg bg-white p-4 shadow">
+          <p className="text-sm font-medium text-gray-600">Last Activity</p>
+          <p className="mt-1 text-lg font-semibold text-gray-900">
+            {quackStats?.last_quack_at ? '✅ Active' : '⏳ Waiting'}
+          </p>
+        </div>
 
-          <div className="pt-4">
+        {/* User Info & Logout */}
+        <div className="rounded-lg bg-white p-6 shadow">
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-600">User ID:</p>
+              <p className="break-all font-mono text-xs text-gray-800">{user.id}</p>
+            </div>
             <LogoutButton />
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center text-sm text-gray-500">
+          <p>Keep quacking! The more you quack, the louder you become. 🦆</p>
         </div>
       </div>
     </div>
