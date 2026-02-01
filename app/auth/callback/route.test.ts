@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GET } from './route'
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 
 // Mock Supabase server client
 const mockExchangeCodeForSession = vi.fn()
@@ -18,7 +18,7 @@ describe('Auth Callback Route', () => {
   })
 
   it('exchanges code for session when code is provided', async () => {
-    const request = new Request('http://localhost:3000/auth/callback?code=test-code')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code')
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     await GET(request)
@@ -27,7 +27,7 @@ describe('Auth Callback Route', () => {
   })
 
   it('redirects to dashboard on successful authentication', async () => {
-    const request = new Request('http://localhost:3000/auth/callback?code=test-code')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code')
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     const response = await GET(request)
@@ -37,7 +37,7 @@ describe('Auth Callback Route', () => {
   })
 
   it('uses custom next parameter for redirect', async () => {
-    const request = new Request('http://localhost:3000/auth/callback?code=test-code&next=/profile')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code&next=/profile')
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     const response = await GET(request)
@@ -46,7 +46,7 @@ describe('Auth Callback Route', () => {
   })
 
   it('redirects to login with error when code exchange fails', async () => {
-    const request = new Request('http://localhost:3000/auth/callback?code=test-code')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code')
     mockExchangeCodeForSession.mockResolvedValue({ error: new Error('Exchange failed') })
 
     const response = await GET(request)
@@ -55,7 +55,7 @@ describe('Auth Callback Route', () => {
   })
 
   it('redirects to login with error when no code is provided', async () => {
-    const request = new Request('http://localhost:3000/auth/callback')
+    const request = new NextRequest('http://localhost:3000/auth/callback')
 
     const response = await GET(request)
 
@@ -63,7 +63,7 @@ describe('Auth Callback Route', () => {
   })
 
   it('preserves origin in redirect URL', async () => {
-    const request = new Request('https://example.com/auth/callback?code=test-code')
+    const request = new NextRequest('https://example.com/auth/callback?code=test-code')
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     const response = await GET(request)
