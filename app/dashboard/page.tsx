@@ -25,9 +25,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 px-4">
-      <div className="w-full max-w-2xl space-y-8">
+      <div className="w-full max-w-[500px] space-y-8">
         {/* Quack Counter */}
-        <QuackCounter initialStats={quackStats} />
+        <div className="flex justify-center">
+          <QuackCounter initialStats={quackStats} />
+        </div>
 
         {/* User Info & Logout */}
         <div className="rounded-lg bg-white p-6 shadow">
@@ -38,7 +40,9 @@ export default async function DashboardPage() {
               </p>
               <p className="text-sm text-gray-600">User ID: <span className="font-mono text-xs text-gray-800">{user.id}</span></p>
             </div>
-            <LogoutButton />
+            <div className="flex justify-center">
+              <LogoutButton />
+            </div>
           </div>
         </div>
 
