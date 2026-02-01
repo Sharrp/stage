@@ -10,9 +10,9 @@ interface QuackCounterProps {
 }
 
 /**
- * Formats a date into a friendly relative time string
+ * Formats a date into a time duration string (without "ago")
  */
-function formatRelativeTime(date: string | null): string {
+function formatTimeDuration(date: string | null): string {
   if (!date) return 'Never';
 
   const now = new Date();
@@ -22,15 +22,15 @@ function formatRelativeTime(date: string | null): string {
   if (diffSeconds < 60) return 'Just now';
   if (diffSeconds < 3600) {
     const minutes = Math.floor(diffSeconds / 60);
-    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
   }
   if (diffSeconds < 86400) {
     const hours = Math.floor(diffSeconds / 3600);
-    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    return `${hours} hour${hours > 1 ? 's' : ''}`;
   }
 
   const days = Math.floor(diffSeconds / 86400);
-  return `${days} day${days > 1 ? 's' : ''} ago`;
+  return `${days} day${days > 1 ? 's' : ''}`;
 }
 
 /**
@@ -196,41 +196,51 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg bg-gradient-to-br from-yellow-50 via-orange-50 to-yellow-50 p-8 shadow-lg">
-      {/* Quack count display */}
-      <div className="mb-6 text-center">
-        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-orange-600">
-          Total Quacks
-        </p>
-        <p className="text-6xl font-bold text-yellow-600">{stats.total_quacks}</p>
+    <div className="flex flex-col items-center justify-center space-y-6">
+      {/* Title with Quack button */}
+      <div className="text-center text-4xl font-bold text-gray-900">
+        You can{' '}
+        <button
+          ref={buttonRef}
+          onClick={handleQuack}
+          disabled={isLoading}
+          className={`relative border-2 border-gray-900 px-4 py-2 font-bold text-gray-900 transition-all duration-200 hover:bg-gray-900 hover:text-white disabled:opacity-75 ${
+            isAnimating ? 'animate-pulse' : ''
+          }`}
+        >
+          Quack
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            </div>
+          )}
+        </button>
+        {' '}🦆
       </div>
 
-      {/* Main quack button */}
-      <button
-        ref={buttonRef}
-        onClick={handleQuack}
-        disabled={isLoading}
-        className={`relative mb-6 rounded-full bg-gradient-to-br from-yellow-400 to-orange-400 px-8 py-6 text-4xl font-bold text-white shadow-lg transition-all duration-200 hover:shadow-xl disabled:opacity-75 ${
-          isAnimating ? 'animate-pulse' : 'hover:scale-110'
-        }`}
-      >
-        Quack! 🦆
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/20">
-            <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-          </div>
-        )}
-      </button>
+      {/* Stats display */}
+      <div className="grid w-full max-w-md grid-cols-2 gap-4 rounded-lg bg-white p-6 shadow-lg">
+        {/* Total Quacks */}
+        <div className="text-center">
+          <p className="mb-2 text-sm font-medium uppercase tracking-wide text-orange-600">
+            Total Quacks
+          </p>
+          <p className="text-4xl font-bold text-yellow-600">{stats.total_quacks}</p>
+        </div>
 
-      {/* Last quack time */}
-      <p className="mb-4 text-center text-sm text-gray-600">
-        Last quack: <span className="font-semibold text-orange-600">{formatRelativeTime(stats.last_quack_at)}</span>
-      </p>
+        {/* Time without quacks */}
+        <div className="text-center">
+          <p className="mb-2 text-sm font-medium uppercase tracking-wide text-orange-600">
+            Time Without Quacks
+          </p>
+          <p className="text-4xl font-bold text-yellow-600">{formatTimeDuration(stats.last_quack_at)}</p>
+        </div>
+      </div>
 
       {/* Error/Demo state */}
       {error && (
         <div
-          className={`mb-4 flex w-full items-center justify-between rounded-lg px-4 py-3 ${
+          className={`w-full max-w-md flex items-center justify-between rounded-lg px-4 py-3 ${
             error.includes('Demo mode')
               ? 'bg-blue-100 text-blue-700'
               : 'bg-red-100 text-red-700'
