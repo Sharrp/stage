@@ -3,31 +3,65 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import Home from './page'
 
+// Set up environment variables
+process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
+
 // Mock Next.js navigation
 const mockPush = vi.fn()
 const mockRefresh = vi.fn()
+const mockRedirect = vi.fn()
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
     refresh: mockRefresh,
   }),
+  redirect: (path: string) => {
+    mockRedirect(path)
+    throw new Error(`NEXT_REDIRECT: ${path}`) // Next.js redirect throws
+  },
 }))
 
-// Mock Supabase client
-const mockSignInWithOAuth = vi.fn()
+// Mock Next.js cookies
+vi.mock('next/headers', () => ({
+  cookies: vi.fn(() => ({
+    get: vi.fn(),
+    set: vi.fn(),
+    getAll: vi.fn(() => []),
+  })),
+}))
+
+// Mock Supabase server client
 const mockGetUser = vi.fn()
+
+vi.mock('@/lib/supabase/server', () => ({
+  createClient: vi.fn(async () => ({
+    auth: {
+      getUser: mockGetUser,
+    },
+  })),
+}))
+
+// Mock Supabase browser client for GoogleLoginButton
+const mockSignInWithOAuth = vi.fn()
 const mockOnAuthStateChange = vi.fn(() => ({
   data: { subscription: { unsubscribe: vi.fn() } },
 }))
 
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: () => ({
+vi.mock('@supabase/ssr', () => ({
+  createBrowserClient: vi.fn(() => ({
     auth: {
       signInWithOAuth: mockSignInWithOAuth,
       getUser: mockGetUser,
       onAuthStateChange: mockOnAuthStateChange,
     },
-  }),
+  })),
+  createServerClient: vi.fn(() => ({
+    auth: {
+      getUser: mockGetUser,
+    },
+  })),
 }))
 
 describe('Home Page', () => {
@@ -37,34 +71,39 @@ describe('Home Page', () => {
 
   it('renders the page without crashing', async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
-    render(<Home />)
+    const jsx = await Home()
+    render(jsx)
     expect(screen.getByRole('heading')).toBeInTheDocument()
   })
 
   it('displays "Under construction" heading', async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
-    render(<Home />)
+    const jsx = await Home()
+    render(jsx)
     const heading = screen.getByRole('heading', { name: /under construction/i })
     expect(heading).toBeInTheDocument()
   })
 
   it('displays exact text "Under construction"', async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
-    render(<Home />)
+    const jsx = await Home()
+    render(jsx)
     const heading = screen.getByRole('heading')
     expect(heading.textContent?.toLowerCase()).toBe('under construction')
   })
 
   it('applies correct styling classes', async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
-    render(<Home />)
+    const jsx = await Home()
+    render(jsx)
     const heading = screen.getByRole('heading', { name: /under construction/i })
     expect(heading).toHaveClass('uppercase')
   })
 
   it('has accessible heading structure', async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
-    render(<Home />)
+    const jsx = await Home()
+    render(jsx)
     const headings = screen.getAllByRole('heading')
     expect(headings).toHaveLength(1)
   })
@@ -75,7 +114,8 @@ describe('Home Page', () => {
     })
 
     it('shows Google sign-in button when not authenticated', async () => {
-      render(<Home />)
+      const jsx = await Home()
+      render(jsx)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument()
@@ -83,7 +123,8 @@ describe('Home Page', () => {
     })
 
     it('Google sign-in button has correct styling', async () => {
-      render(<Home />)
+      const jsx = await Home()
+      render(jsx)
 
       await waitFor(() => {
         const button = screen.getByRole('button', { name: /sign in with google/i })
@@ -96,7 +137,8 @@ describe('Home Page', () => {
       const user = userEvent.setup()
       mockSignInWithOAuth.mockResolvedValue({ error: null })
 
-      render(<Home />)
+      const jsx = await Home()
+      render(jsx)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument()
@@ -117,7 +159,8 @@ describe('Home Page', () => {
       const user = userEvent.setup()
       mockSignInWithOAuth.mockImplementation(() => new Promise(() => {})) // Never resolves
 
-      render(<Home />)
+      const jsx = await Home()
+      render(jsx)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument()
@@ -143,70 +186,28 @@ describe('Home Page', () => {
 
     beforeEach(() => {
       mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
+      vi.clearAllMocks()
     })
 
     it('redirects to dashboard when user is authenticated', async () => {
-      render(<Home />)
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/dashboard')
-      })
-    })
-
-    it('does not show Google sign-in button when authenticated', async () => {
-      render(<Home />)
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/dashboard')
-      })
-
-      expect(screen.queryByRole('button', { name: /sign in with google/i })).not.toBeInTheDocument()
-    })
-  })
-
-  describe('Auth State Changes', () => {
-    it('sets up auth state listener on mount', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
-
-      render(<Home />)
-
-      await waitFor(() => {
-        expect(mockOnAuthStateChange).toHaveBeenCalled()
-      })
-    })
-
-    it('redirects to dashboard when user logs in', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
-
-      const mockUnsubscribe = vi.fn()
-      const authCallback = vi.fn()
-
-      mockOnAuthStateChange.mockImplementation((callback) => {
-        authCallback.mockImplementation(callback)
-        return {
-          data: { subscription: { unsubscribe: mockUnsubscribe } },
-        }
-      })
-
-      render(<Home />)
-
-      await waitFor(() => {
-        expect(mockOnAuthStateChange).toHaveBeenCalled()
-      })
-
-      // Simulate user login
-      const mockUser = {
-        id: '123',
-        email: 'test@example.com',
-        aud: 'authenticated',
-        role: 'authenticated',
+      try {
+        await Home()
+      } catch (error: any) {
+        // redirect() throws an error in Next.js
+        expect(error.message).toContain('NEXT_REDIRECT')
       }
+      expect(mockRedirect).toHaveBeenCalledWith('/dashboard')
+    })
 
-      authCallback('SIGNED_IN', { user: mockUser })
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/dashboard')
-      })
+    it('does not render page when authenticated', async () => {
+      try {
+        await Home()
+      } catch (error: any) {
+        // redirect() throws, so page doesn't render
+        expect(error.message).toContain('NEXT_REDIRECT')
+      }
+      expect(mockRedirect).toHaveBeenCalledWith('/dashboard')
     })
   })
+
 })

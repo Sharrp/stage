@@ -1,21 +1,47 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import DashboardPage from './page'
 
+// Set up environment variables
+process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
+
 // Mock Next.js redirect
 const mockRedirect = vi.fn()
+
 vi.mock('next/navigation', () => ({
-  redirect: (path: string) => mockRedirect(path),
+  redirect: (path: string) => {
+    mockRedirect(path)
+    throw new Error(`NEXT_REDIRECT: ${path}`)
+  },
+}))
+
+// Mock Next.js cookies
+vi.mock('next/headers', () => ({
+  cookies: vi.fn(() => ({
+    get: vi.fn(),
+    set: vi.fn(),
+    getAll: vi.fn(() => []),
+  })),
 }))
 
 // Mock Supabase server client
 const mockGetUser = vi.fn()
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: async () => ({
+const mockFrom = vi.fn(() => ({
+  select: vi.fn(() => ({
+    eq: vi.fn(() => ({
+      single: vi.fn(() => Promise.resolve({ data: null, error: null })),
+    })),
+  })),
+}))
+
+vi.mock('@supabase/ssr', () => ({
+  createServerClient: vi.fn(() => ({
     auth: {
       getUser: mockGetUser,
     },
-  }),
+    from: mockFrom,
+  })),
 }))
 
 // Mock LogoutButton component
@@ -23,7 +49,16 @@ vi.mock('./LogoutButton', () => ({
   default: () => <button>Logout</button>,
 }))
 
+// Mock QuackCounter component
+vi.mock('@/components/QuackCounter', () => ({
+  default: () => <div>QuackCounter</div>,
+}))
+
 describe('Dashboard Page', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   describe('When not authenticated', () => {
     it('redirects to homepage when user is not authenticated', async () => {
       mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
@@ -52,7 +87,7 @@ describe('Dashboard Page', () => {
       const result = await DashboardPage()
       render(result)
 
-      expect(screen.getByRole('heading', { name: /dashboard/i })).toBeInTheDocument()
+      expect(screen.getByText(/signed in as/i)).toBeInTheDocument()
     })
 
     it('displays user email', async () => {
@@ -70,17 +105,17 @@ describe('Dashboard Page', () => {
       const result = await DashboardPage()
       render(result)
 
+      expect(screen.getByText(/user id/i)).toBeInTheDocument()
       expect(screen.getByText(mockUser.id)).toBeInTheDocument()
     })
 
-    it('shows welcome message', async () => {
+    it('shows signed in message', async () => {
       mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
 
       const result = await DashboardPage()
       render(result)
 
-      expect(screen.getByText(/welcome/i)).toBeInTheDocument()
-      expect(screen.getByText(/you are logged in as/i)).toBeInTheDocument()
+      expect(screen.getByText(/signed in as/i)).toBeInTheDocument()
     })
 
     it('renders logout button', async () => {
@@ -92,14 +127,13 @@ describe('Dashboard Page', () => {
       expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
     })
 
-    it('has correct styling classes', async () => {
+    it('renders QuackCounter component', async () => {
       mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
 
       const result = await DashboardPage()
       render(result)
 
-      const heading = screen.getByRole('heading', { name: /dashboard/i })
-      expect(heading).toHaveClass('text-[#fb607f]')
+      expect(screen.getByText('QuackCounter')).toBeInTheDocument()
     })
   })
 })

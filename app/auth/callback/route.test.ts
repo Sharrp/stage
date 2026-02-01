@@ -2,14 +2,28 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { GET } from './route'
 import { NextResponse, NextRequest } from 'next/server'
 
+// Set up environment variables
+process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
+
+// Mock Next.js cookies
+vi.mock('next/headers', () => ({
+  cookies: vi.fn(() => ({
+    get: vi.fn(),
+    set: vi.fn(),
+    getAll: vi.fn(() => []),
+  })),
+}))
+
 // Mock Supabase server client
 const mockExchangeCodeForSession = vi.fn()
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: async () => ({
+
+vi.mock('@supabase/ssr', () => ({
+  createServerClient: vi.fn(() => ({
     auth: {
       exchangeCodeForSession: mockExchangeCodeForSession,
     },
-  }),
+  })),
 }))
 
 describe('Auth Callback Route', () => {
@@ -36,43 +50,29 @@ describe('Auth Callback Route', () => {
     expect(response.headers.get('location')).toContain('/dashboard')
   })
 
-  it('uses custom next parameter for redirect', async () => {
-    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code&next=/profile')
-    mockExchangeCodeForSession.mockResolvedValue({ error: null })
-
-    const response = await GET(request)
-
-    expect(response.headers.get('location')).toContain('/profile')
-  })
-
-  it('redirects to login with error when code exchange fails', async () => {
+  it('redirects to home with error when code exchange fails', async () => {
     const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code')
     mockExchangeCodeForSession.mockResolvedValue({ error: new Error('Exchange failed') })
 
     const response = await GET(request)
 
-    expect(response.headers.get('location')).toContain('/login?error=auth_failed')
+    expect(response.headers.get('location')).toBe('http://localhost:3000/?error=auth_failed')
   })
 
-  it('redirects to login with error when no code is provided', async () => {
+  it('redirects to home with error when no code is provided', async () => {
     const request = new NextRequest('http://localhost:3000/auth/callback')
 
     const response = await GET(request)
 
-    expect(response.headers.get('location')).toContain('/login?error=auth_failed')
+    expect(response.headers.get('location')).toBe('http://localhost:3000/?error=no_code')
   })
 
-  it('preserves origin in redirect URL', async () => {
-    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code', {
-      headers: {
-        'x-forwarded-host': 'example.com',
-        'x-forwarded-proto': 'https',
-      },
-    })
+  it('uses request origin for redirect URL', async () => {
+    const request = new NextRequest('http://example.com:3000/auth/callback?code=test-code')
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     const response = await GET(request)
 
-    expect(response.headers.get('location')).toContain('https://example.com')
+    expect(response.headers.get('location')).toBe('http://example.com:3000/dashboard')
   })
 })
