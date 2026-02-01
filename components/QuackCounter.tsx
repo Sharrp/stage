@@ -34,6 +34,30 @@ function formatRelativeTime(date: string | null): string {
 }
 
 /**
+ * Formats a date into a time duration string (without "ago")
+ */
+function formatTimeDuration(date: string | null): string {
+  if (!date) return 'Never';
+
+  const now = new Date();
+  const then = new Date(date);
+  const diffSeconds = Math.floor((now.getTime() - then.getTime()) / 1000);
+
+  if (diffSeconds < 60) return 'Just now';
+  if (diffSeconds < 3600) {
+    const minutes = Math.floor(diffSeconds / 60);
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+  }
+  if (diffSeconds < 86400) {
+    const hours = Math.floor(diffSeconds / 3600);
+    return `${hours} hour${hours > 1 ? 's' : ''}`;
+  }
+
+  const days = Math.floor(diffSeconds / 86400);
+  return `${days} day${days > 1 ? 's' : ''}`;
+}
+
+/**
  * Creates a floating duck emoji animation
  */
 function createFloatingDuck(x: number, y: number): HTMLElement {
@@ -234,7 +258,7 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
 
       {/* Last quack time */}
       <p className="mb-4 text-center text-sm text-gray-600">
-        Last quack: <span className="font-semibold text-orange-600">{formatRelativeTime(stats.last_quack_at)}</span>
+        Time without quack: <span className="font-semibold text-orange-600">{formatTimeDuration(stats.last_quack_at)}</span>
       </p>
 
       {/* Error/Demo state */}
