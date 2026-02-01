@@ -2,21 +2,23 @@
  * Database query functions for Supabase
  */
 
-import { createClient } from './client';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { UserProfile, QuackStats } from './database.types';
 
 /**
  * Fetches the user profile for a given user ID
+ * @param supabase - The Supabase client instance (server or browser)
  * @param userId - The user's UUID from auth.users
  * @returns The user profile or null if not found
  * @throws Error if the database query fails
  */
-export async function getUserProfile(userId: string): Promise<UserProfile | null> {
+export async function getUserProfile(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<UserProfile | null> {
   if (!userId) {
     throw new Error('User ID is required');
   }
-
-  const supabase = createClient();
 
   const { data, error } = await supabase
     .from('user_profiles')
@@ -37,16 +39,18 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
 
 /**
  * Fetches the quack stats for a given user
+ * @param supabase - The Supabase client instance (server or browser)
  * @param userId - The user's UUID
  * @returns The quack stats or null if not found
  * @throws Error if the database query fails
  */
-export async function getQuackStats(userId: string): Promise<QuackStats | null> {
+export async function getQuackStats(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<QuackStats | null> {
   if (!userId) {
     throw new Error('User ID is required');
   }
-
-  const supabase = createClient();
 
   const { data, error } = await supabase
     .from('quack_stats')
@@ -67,16 +71,19 @@ export async function getQuackStats(userId: string): Promise<QuackStats | null> 
 
 /**
  * Increments the quack count for a user and updates the last quack timestamp
+ * @param supabase - The Supabase client instance (server or browser)
  * @param userId - The user's UUID
  * @returns The updated quack stats
  * @throws Error if the update fails
  */
-export async function incrementQuackCount(userId: string): Promise<QuackStats> {
+export async function incrementQuackCount(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<QuackStats> {
   if (!userId) {
     throw new Error('User ID is required');
   }
 
-  const supabase = createClient();
   const now = new Date().toISOString();
 
   // Get current quack count

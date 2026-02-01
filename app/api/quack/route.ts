@@ -192,9 +192,22 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Create a Supabase client with the user's access token for proper RLS context
+    const supabase = createSupabaseClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      }
+    );
+
     // Import getQuackStats here to avoid circular dependency
     const { getQuackStats } = await import('@/lib/supabase/queries');
-    const stats = await getQuackStats(userId);
+    const stats = await getQuackStats(supabase, userId);
 
     if (!stats) {
       return NextResponse.json(
