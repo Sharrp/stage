@@ -232,15 +232,16 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
   return (
     <div className="flex w-full max-w-[500px] flex-col items-center justify-center space-y-6">
       {/* Title with Quack button */}
-      <div className="text-center text-4xl font-bold text-gray-900">
+      <div className="text-center text-6xl md:text-[9rem] lg:text-[11rem] font-bold text-gray-900 tracking-wider uppercase leading-tight" style={{ fontSize: '3.75rem', fontWeight: '700' }}>
         You can{' '}
         <button
           ref={buttonRef}
           onClick={handleQuack}
           disabled={isLoading}
-          className={`relative border-2 border-gray-900 px-4 py-2 font-bold text-gray-900 transition-all duration-200 hover:bg-gray-900 hover:text-white disabled:opacity-75 ${
+          className={`relative border-2 border-gray-900 px-4 py-1 font-bold text-gray-900 transition-all duration-200 hover:bg-gray-900 hover:text-white disabled:opacity-75 ${
             isAnimating ? 'animate-pulse' : ''
           }`}
+          style={{ fontSize: '0.6em', lineHeight: '1', verticalAlign: 'baseline' }}
         >
           Quack
           {isLoading && (
