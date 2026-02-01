@@ -230,7 +230,7 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-6">
+    <div className="flex w-full max-w-[500px] flex-col items-center justify-center space-y-6">
       {/* Title with Quack button */}
       <div className="text-center text-4xl font-bold text-gray-900">
         You can{' '}
@@ -253,7 +253,7 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
       </div>
 
       {/* Stats display */}
-      <div className="grid w-full max-w-md grid-cols-2 gap-4 rounded-lg bg-white p-6 shadow-lg">
+      <div className="grid w-full grid-cols-2 gap-4 rounded-lg bg-white p-6 shadow-lg">
         {/* Total Quacks */}
         <div className="text-center">
           <p className="mb-2 text-sm font-medium uppercase tracking-wide text-orange-600">
@@ -274,7 +274,7 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
       {/* Error/Demo state */}
       {error && (
         <div
-          className={`w-full max-w-md flex items-center justify-between rounded-lg px-4 py-3 ${
+          className={`w-full flex items-center justify-between rounded-lg px-4 py-3 ${
             error.includes('Demo mode')
               ? 'bg-blue-100 text-blue-700'
               : 'bg-red-100 text-red-700'
