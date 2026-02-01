@@ -58,30 +58,6 @@ function formatTimeDuration(date: string | null): string {
 }
 
 /**
- * Formats a date into a friendly relative time string
- */
-function formatRelativeTime(date: string | null): string {
-  if (!date) return 'Never';
-
-  const now = new Date();
-  const then = new Date(date);
-  const diffSeconds = Math.floor((now.getTime() - then.getTime()) / 1000);
-
-  if (diffSeconds < 60) return 'Just now';
-  if (diffSeconds < 3600) {
-    const minutes = Math.floor(diffSeconds / 60);
-    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-  }
-  if (diffSeconds < 86400) {
-    const hours = Math.floor(diffSeconds / 3600);
-    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-  }
-
-  const days = Math.floor(diffSeconds / 86400);
-  return `${days} day${days > 1 ? 's' : ''} ago`;
-}
-
-/**
  * Creates a floating duck emoji animation
  */
 function createFloatingDuck(x: number, y: number): HTMLElement {
