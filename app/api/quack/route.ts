@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import type { Database, QuackStats } from '@/lib/supabase/database.types';
+import type { Database, QuackStats, UserProfileInsert, QuackStatsInsert } from '@/lib/supabase/database.types';
 
 /**
  * Validates JWT token and extracts user ID
@@ -107,19 +107,18 @@ export async function POST(request: NextRequest): Promise<NextResponse<QuackResp
     const now = new Date().toISOString();
 
     // Ensure user_profiles record exists (for users created before trigger)
-    const { error: profileError } = await supabase
-      .from('user_profiles')
-      .upsert(
-        {
-          id: userId,
-          email: user.email || null,
-          display_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
-          updated_at: now,
-        },
-        {
-          onConflict: 'id',
-        }
-      );
+    const profileData: UserProfileInsert = {
+      id: userId,
+      email: user.email || null,
+      display_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
+      updated_at: now,
+    };
+
+    const { error: profileError } = await (supabase
+      .from('user_profiles') as any)
+      .upsert(profileData, {
+        onConflict: 'id',
+      });
 
     if (profileError) {
       console.error('Profile upsert error:', profileError);
@@ -138,19 +137,18 @@ export async function POST(request: NextRequest): Promise<NextResponse<QuackResp
     const newCount = (currentStats?.total_quacks ?? 0) + increment;
 
     // Upsert quack stats
+    const quackStatsData: QuackStatsInsert = {
+      user_id: userId,
+      total_quacks: newCount,
+      last_quack_at: now,
+      updated_at: now,
+    };
+
     const { data: updatedStats, error: upsertError } = await supabase
       .from('quack_stats')
-      .upsert(
-        {
-          user_id: userId,
-          total_quacks: newCount,
-          last_quack_at: now,
-          updated_at: now,
-        },
-        {
-          onConflict: 'user_id',
-        }
-      )
+      .upsert(quackStatsData, {
+        onConflict: 'user_id',
+      })
       .select()
       .single();
 
