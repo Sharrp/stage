@@ -92,3 +92,4 @@ jobs:
             --format='value(status.url)')
           echo "🚀 Deployed to: $SERVICE_URL"
           echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
+
