@@ -67,11 +67,7 @@ jobs:
 
       - name: Build and Push Image
         run: |
-          docker build \
-            --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
-            -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/stage-app-images/${{ env.SERVICE_NAME }} \
-            .
+          docker build --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }} --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/stage-app-images/${{ env.SERVICE_NAME }} .
           docker push us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/stage-app-images/${{ env.SERVICE_NAME }}
 
       - name: Deploy to Cloud Run
