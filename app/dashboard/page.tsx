@@ -26,11 +26,6 @@ export default async function DashboardPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 px-4">
       <div className="w-full max-w-2xl space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="mb-2 text-4xl font-bold text-gray-900">You can Quack! 🦆</h1>
-        </div>
-
         {/* Quack Counter */}
         <QuackCounter initialStats={quackStats} />
 
