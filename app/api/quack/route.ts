@@ -127,10 +127,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<QuackResp
 
     // Get current quack count
     const { data: currentStats } = await (supabase
-      .from('quack_stats')
+      .from('quack_stats') as any)
       .select('total_quacks')
       .eq('user_id', userId)
-      .single() as any);
+      .single();
 
     // Use increment from request body, default to 1
     const increment = Math.max(1, Math.floor(requestBody.increment || 1));
@@ -145,12 +145,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<QuackResp
     };
 
     const { data: updatedStats, error: upsertError } = await (supabase
-    .from('quack_stats')
+    .from('quack_stats') as any)
     .upsert(quackStatsData, {
       onConflict: 'user_id',
     })
     .select()
-    .single() as any);
+    .single();
 
     if (upsertError) {
       throw new Error(`Failed to increment quack count: ${upsertError.message}`);
