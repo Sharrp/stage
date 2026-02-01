@@ -63,7 +63,12 @@ describe('Auth Callback Route', () => {
   })
 
   it('preserves origin in redirect URL', async () => {
-    const request = new NextRequest('https://example.com/auth/callback?code=test-code')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-host': 'example.com',
+        'x-forwarded-proto': 'https',
+      },
+    })
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     const response = await GET(request)
