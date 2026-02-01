@@ -88,10 +88,12 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
   };
 
   const [stats, setStats] = useState<QuackStats>(initialStats || demoStats);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const pendingClicksRef = useRef<number>(0);
+  const isSyncingRef = useRef<boolean>(false);
 
   // Update relative time periodically
   const [, setRefreshTrigger] = useState(0);
@@ -100,133 +102,115 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
       setRefreshTrigger((prev) => prev + 1);
     }, 60000); // Update every minute
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      // Clean up debounce timer on unmount
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
   }, []);
 
-  const handleQuack = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    try {
-      setError(null);
-      setIsAnimating(true);
-      setIsLoading(true);
+  const syncWithServer = async () => {
+    if (isSyncingRef.current || pendingClicksRef.current === 0) {
+      return;
+    }
 
-      // Get the access token from Supabase session
+    isSyncingRef.current = true;
+    const clicksToSync = pendingClicksRef.current;
+    pendingClicksRef.current = 0;
+
+    try {
       const supabase = createClient();
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        // Demo mode: just play sound and animate
-        await playQuackSound().catch(() => {});
-
-        // Create floating ducks
-        if (buttonRef.current) {
-          const rect = buttonRef.current.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-
-          for (let i = 0; i < 3; i++) {
-            setTimeout(() => {
-              createFloatingDuck(
-                centerX + (Math.random() - 0.5) * 50,
-                centerY + (Math.random() - 0.5) * 50
-              );
-            }, i * 100);
-          }
-        }
-
-        // Optimistic demo update
-        setStats((prev) => {
-          if (!prev) {
-            return {
-              id: 'demo',
-              user_id: 'demo',
-              total_quacks: 1,
-              last_quack_at: new Date().toISOString(),
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            };
-          }
-          return {
-            ...prev,
-            total_quacks: prev.total_quacks + 1,
-            last_quack_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          };
-        });
-
         setError('Demo mode: Sign in to save your quacks!');
-        setIsLoading(false);
-        setIsAnimating(false);
         return;
       }
 
-      // Create floating ducks
-      if (buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        for (let i = 0; i < 3; i++) {
-          setTimeout(() => {
-            createFloatingDuck(
-              centerX + (Math.random() - 0.5) * 50,
-              centerY + (Math.random() - 0.5) * 50
-            );
-          }, i * 100);
-        }
-      }
-
-      // Play sound
-      await playQuackSound().catch(() => {
-        // Sound failed, but we still want to proceed
-      });
-
-      // Optimistic update
-      setStats((prev) => {
-        if (!prev) {
-          // First quack for this user - create initial stats
-          return {
-            id: crypto.randomUUID(),
-            user_id: session.user.id,
-            total_quacks: 1,
-            last_quack_at: new Date().toISOString(),
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          };
-        }
-        return {
-          ...prev,
-          total_quacks: prev.total_quacks + 1,
-          last_quack_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-      });
-
-      // API call to increment quack count
+      // Send a single request with the total increment amount
       const response = await fetch('/api/quack', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: JSON.stringify({
+          increment: clicksToSync,
+        }),
       });
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to increment quack count');
+        throw new Error(data.error || 'Failed to sync quacks');
       }
 
-      const updatedStats = await response.json();
-      setStats(updatedStats);
+      const finalStats = await response.json();
+
+      // Update to the final server state
+      setStats(finalStats);
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      // Rollback optimistic update
-      setStats(initialStats || demoStats);
+      // Keep the optimistic count on error
     } finally {
-      setIsLoading(false);
-      setIsAnimating(false);
+      isSyncingRef.current = false;
+
+      // If more clicks came in while syncing, schedule another sync
+      if (pendingClicksRef.current > 0) {
+        debounceTimerRef.current = setTimeout(syncWithServer, 500);
+      }
     }
+  };
+
+  const handleQuack = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Trigger animation briefly for this click
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 200);
+
+    setError(null);
+
+    // Create floating ducks
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          createFloatingDuck(
+            centerX + (Math.random() - 0.5) * 50,
+            centerY + (Math.random() - 0.5) * 50
+          );
+        }, i * 100);
+      }
+    }
+
+    // Play sound (non-blocking)
+    playQuackSound().catch(() => {});
+
+    // Optimistic UI update - increment immediately
+    const newTimestamp = new Date().toISOString();
+    setStats((prev) => ({
+      ...prev,
+      total_quacks: prev.total_quacks + 1,
+      last_quack_at: newTimestamp,
+      updated_at: newTimestamp,
+    }));
+
+    // Track this pending click
+    pendingClicksRef.current += 1;
+
+    // Clear existing timer and start new one (debounce)
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Schedule sync after 500ms of inactivity
+    debounceTimerRef.current = setTimeout(syncWithServer, 500);
   };
 
   return (
@@ -237,18 +221,12 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
         <button
           ref={buttonRef}
           onClick={handleQuack}
-          disabled={isLoading}
-          className={`relative border-2 border-gray-900 px-4 py-1 font-bold text-gray-900 transition-all duration-200 hover:bg-gray-900 hover:text-white disabled:opacity-75 ${
+          className={`relative border-2 border-gray-900 px-4 py-1 font-bold text-gray-900 transition-all duration-200 hover:bg-gray-900 hover:text-white ${
             isAnimating ? 'animate-pulse' : ''
           }`}
           style={{ fontSize: '0.6em', lineHeight: '1', verticalAlign: 'baseline' }}
         >
           Quack
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            </div>
-          )}
         </button>
         {' '}🦆
       </div>
@@ -287,7 +265,6 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
           {!error.includes('Demo mode') && (
             <button
               onClick={handleQuack}
-              disabled={isLoading}
               className={`ml-3 rounded px-3 py-1 text-sm font-medium ${
                 error.includes('Demo mode')
                   ? 'hover:bg-blue-200'

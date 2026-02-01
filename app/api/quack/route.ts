@@ -31,6 +31,7 @@ async function getUserIdFromToken(token: string): Promise<string | null> {
 
 interface QuackRequestBody {
   userId?: string;
+  increment?: number;
 }
 
 interface QuackResponse extends QuackStats {}
@@ -132,7 +133,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<QuackResp
       .eq('user_id', userId)
       .single();
 
-    const newCount = (currentStats?.total_quacks ?? 0) + 1;
+    // Use increment from request body, default to 1
+    const increment = Math.max(1, Math.floor(requestBody.increment || 1));
+    const newCount = (currentStats?.total_quacks ?? 0) + increment;
 
     // Upsert quack stats
     const { data: updatedStats, error: upsertError } = await supabase
