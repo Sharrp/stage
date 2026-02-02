@@ -252,8 +252,44 @@ describe('ChatInterface', () => {
         expect(screen.getByText('Hello')).toBeInTheDocument();
       });
 
-      // Assistant message shows loading state
-      expect(screen.getByText('Loading...')).toBeInTheDocument();
+      // Form should be disabled during loading
+      expect(button).toBeDisabled();
+      expect(input).toBeDisabled();
+    });
+
+    it('shows typing indicator during loading', async () => {
+      (global.fetch as any).mockImplementation(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  ok: true,
+                  json: async () => ({
+                    userMessage: 'Test',
+                    assistantMessage: 'Response!',
+                  }),
+                }),
+              200
+            )
+          )
+      );
+
+      render(<ChatInterface initialMessage={null} />);
+
+      const input = screen.getByPlaceholderText('Your message...');
+      await userEvent.type(input, 'Test');
+
+      const button = screen.getByRole('button', { name: /send/i });
+      await userEvent.click(button);
+
+      // User message appears
+      await waitFor(() => {
+        expect(screen.getByText('Test')).toBeInTheDocument();
+      });
+
+      // Old "Loading..." text should not exist, typing indicator is shown instead
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
     });
   });
 
@@ -519,6 +555,63 @@ describe('ChatInterface', () => {
       await waitFor(() => {
         expect(screen.getByText('Sign in to chat')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('Animation Behavior', () => {
+    it('displays user bubble without "Loading..." text during optimistic update', async () => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          userMessage: 'Ping',
+          assistantMessage: 'Pong!',
+        }),
+      });
+
+      render(<ChatInterface initialMessage={null} />);
+
+      const input = screen.getByPlaceholderText('Your message...');
+      await userEvent.type(input, 'Ping');
+
+      const button = screen.getByRole('button', { name: /send/i });
+      await userEvent.click(button);
+
+      // User message appears in the bubble
+      await waitFor(() => {
+        expect(screen.getByText('Ping')).toBeInTheDocument();
+      });
+
+      // "Loading..." text should not appear (replaced with typing indicator)
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    it('displays response message after API call succeeds', async () => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          userMessage: 'Hi',
+          assistantMessage: 'Hello there!',
+        }),
+      });
+
+      render(<ChatInterface initialMessage={null} />);
+
+      const input = screen.getByPlaceholderText('Your message...');
+      await userEvent.type(input, 'Hi');
+
+      const button = screen.getByRole('button', { name: /send/i });
+      await userEvent.click(button);
+
+      // Wait for response message to appear
+      await waitFor(() => {
+        expect(screen.getByText('Hello there!')).toBeInTheDocument();
+      });
+
+      // User message should still be visible
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+
+      // Input should be cleared after successful submission
+      expect(input).toHaveValue('');
     });
   });
 });

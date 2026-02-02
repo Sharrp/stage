@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 
 interface ChatInterfaceProps {
@@ -18,6 +19,7 @@ export default function ChatInterface({ initialMessage }: ChatInterfaceProps) {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [messageKey, setMessageKey] = useState(0); // Track message changes for animations
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,6 +49,7 @@ export default function ChatInterface({ initialMessage }: ChatInterfaceProps) {
       userMessage: trimmedInput,
       assistantMessage: 'Loading...',
     });
+    setMessageKey((prev) => prev + 1);
     setIsLoading(true);
     setError(null);
 
@@ -95,27 +98,77 @@ export default function ChatInterface({ initialMessage }: ChatInterfaceProps) {
     <div className="rounded-xl bg-card p-8 shadow-sm">
       <div className="space-y-6">
         {/* Messages */}
-        {message ? (
-          <div className="space-y-4 min-h-[200px]">
-            {/* User bubble */}
-            <div className="flex justify-end">
-              <div className="rounded-2xl bg-primary px-5 py-3 text-primary-foreground break-words max-w-sm shadow-sm">
-                {message.userMessage}
-              </div>
-            </div>
+        <div className="relative min-h-[200px] overflow-hidden">
+          <AnimatePresence mode="popLayout">
+            {message ? (
+              <motion.div
+                key={`message-${messageKey}`}
+                className="space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ y: -200 }}
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
+              >
+                {/* User bubble */}
+                <motion.div
+                  key={`user-${message.userMessage}`}
+                  className="flex justify-end"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.3 }}
+                >
+                  <div className="rounded-2xl bg-primary px-5 py-3 text-primary-foreground break-words max-w-sm shadow-sm">
+                    {message.userMessage}
+                  </div>
+                </motion.div>
 
-            {/* Assistant bubble */}
-            <div className="flex justify-start">
-              <div className="rounded-2xl bg-secondary px-5 py-3 text-secondary-foreground break-words max-w-sm">
-                {message.assistantMessage}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="py-12 text-center text-muted-foreground min-h-[200px] flex items-center justify-center">
-            Send a message to get a sarcastic rhyme!
-          </div>
-        )}
+                {/* Assistant bubble or typing indicator */}
+                <motion.div
+                  key={`assistant-${message.assistantMessage}`}
+                  className="flex justify-start"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
+                >
+                  {isLoading ? (
+                    <div className="rounded-2xl bg-secondary px-5 py-3 flex items-center gap-1">
+                      <motion.div
+                        className="w-2 h-2 bg-secondary-foreground rounded-full"
+                        animate={{ y: [0, -8, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                      />
+                      <motion.div
+                        className="w-2 h-2 bg-secondary-foreground rounded-full"
+                        animate={{ y: [0, -8, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                      />
+                      <motion.div
+                        className="w-2 h-2 bg-secondary-foreground rounded-full"
+                        animate={{ y: [0, -8, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl bg-secondary px-5 py-3 text-secondary-foreground break-words max-w-sm">
+                      {message.assistantMessage}
+                    </div>
+                  )}
+                </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty-state"
+                className="py-12 text-center text-muted-foreground flex items-center justify-center h-[200px]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                Send a message to get a sarcastic rhyme!
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Error message */}
         {error && (

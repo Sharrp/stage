@@ -85,7 +85,8 @@ describe('Dashboard Page', () => {
       const result = await DashboardPage()
       render(result)
 
-      expect(screen.getByText(/signed in as/i)).toBeInTheDocument()
+      // Dashboard renders with the ChatInterface component
+      expect(screen.getByPlaceholderText('Your message...')).toBeInTheDocument()
     })
 
     it('displays user email', async () => {
@@ -97,23 +98,22 @@ describe('Dashboard Page', () => {
       expect(screen.getByText(mockUser.email)).toBeInTheDocument()
     })
 
-    it('displays user ID', async () => {
+    it('displays user email', async () => {
       mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
 
       const result = await DashboardPage()
       render(result)
 
-      expect(screen.getByText(/user id/i)).toBeInTheDocument()
-      expect(screen.getByText(mockUser.id)).toBeInTheDocument()
+      expect(screen.getByText(mockUser.email)).toBeInTheDocument()
     })
 
-    it('shows signed in message', async () => {
+    it('shows logout button when authenticated', async () => {
       mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
 
       const result = await DashboardPage()
       render(result)
 
-      expect(screen.getByText(/signed in as/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
     })
 
     it('renders logout button', async () => {

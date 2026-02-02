@@ -97,7 +97,7 @@ describe('Home Page', () => {
     const jsx = await Home()
     render(jsx)
     const heading = screen.getByRole('heading', { name: /under construction/i })
-    expect(heading).toHaveClass('uppercase')
+    expect(heading).toHaveClass('text-6xl', 'font-bold', 'text-foreground')
   })
 
   it('has accessible heading structure', async () => {
@@ -128,8 +128,7 @@ describe('Home Page', () => {
 
       await waitFor(() => {
         const button = screen.getByRole('button', { name: /sign in with google/i })
-        expect(button).toHaveClass('bg-[#fb607f]')
-        expect(button).toHaveClass('text-white')
+        expect(button).toHaveClass('bg-primary', 'text-primary-foreground')
       })
     })
 

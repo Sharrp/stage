@@ -81,7 +81,7 @@ describe('QuackCounter', () => {
       render(<QuackCounter initialStats={mockStats} />)
 
       const button = screen.getByRole('button', { name: /quack/i })
-      expect(button).toHaveClass('border-2', 'border-gray-900', 'px-4', 'py-1')
+      expect(button).toHaveClass('border', 'border-primary', 'px-5', 'py-2')
     })
 
     it('error message displays with styling', async () => {
