@@ -32,7 +32,12 @@ describe('Auth Callback Route', () => {
   })
 
   it('exchanges code for session when code is provided', async () => {
-    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-proto': 'http',
+        'x-forwarded-host': 'localhost:3000',
+      },
+    })
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     await GET(request)
@@ -41,7 +46,12 @@ describe('Auth Callback Route', () => {
   })
 
   it('redirects to dashboard on successful authentication', async () => {
-    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-proto': 'http',
+        'x-forwarded-host': 'localhost:3000',
+      },
+    })
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     const response = await GET(request)
@@ -51,7 +61,12 @@ describe('Auth Callback Route', () => {
   })
 
   it('redirects to home with error when code exchange fails', async () => {
-    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code')
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-proto': 'http',
+        'x-forwarded-host': 'localhost:3000',
+      },
+    })
     mockExchangeCodeForSession.mockResolvedValue({ error: new Error('Exchange failed') })
 
     const response = await GET(request)
@@ -60,7 +75,12 @@ describe('Auth Callback Route', () => {
   })
 
   it('redirects to home with error when no code is provided', async () => {
-    const request = new NextRequest('http://localhost:3000/auth/callback')
+    const request = new NextRequest('http://localhost:3000/auth/callback', {
+      headers: {
+        'x-forwarded-proto': 'http',
+        'x-forwarded-host': 'localhost:3000',
+      },
+    })
 
     const response = await GET(request)
 
@@ -68,7 +88,12 @@ describe('Auth Callback Route', () => {
   })
 
   it('uses request origin for redirect URL', async () => {
-    const request = new NextRequest('http://example.com:3000/auth/callback?code=test-code')
+    const request = new NextRequest('http://example.com:3000/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-proto': 'http',
+        'x-forwarded-host': 'example.com:3000',
+      },
+    })
     mockExchangeCodeForSession.mockResolvedValue({ error: null })
 
     const response = await GET(request)
