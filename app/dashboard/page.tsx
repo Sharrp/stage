@@ -10,8 +10,7 @@ async function getLastChatMessage(
   supabase: SupabaseClient<Database>,
   userId: string
 ): Promise<{ userMessage: string; assistantMessage: string } | null> {
-  const { data, error } = await supabase
-    .from('chat_messages')
+  const { data, error } = await (supabase.from('chat_messages') as any)
     .select('user_message, assistant_message')
     .eq('user_id', userId)
     .single()
