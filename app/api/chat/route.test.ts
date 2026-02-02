@@ -408,6 +408,47 @@ describe('Chat API Route', () => {
 
       expect(response.status).toBe(200)
     })
+
+    it('upsert updates existing message for same user', async () => {
+      const firstTimestamp = '2024-01-01T10:00:00Z'
+      const secondTimestamp = '2024-01-01T11:00:00Z'
+
+      mockSupabaseSingle.mockResolvedValue({
+        data: {
+          user_id: 'user-123',
+          user_message: 'new message',
+          assistant_message: 'new response',
+          updated_at: secondTimestamp,
+        },
+      })
+
+      const { sendChatMessage } = await import('@/lib/openrouter/client')
+      vi.mocked(sendChatMessage).mockResolvedValue('new response')
+
+      const request = new NextRequest('http://localhost:3000/api/chat', {
+        method: 'POST',
+        headers: {
+          authorization: 'Bearer test-token',
+        },
+        body: JSON.stringify({ message: 'new message' }),
+      })
+
+      const response = await POST(request)
+
+      expect(response.status).toBe(200)
+      const data = await response.json()
+
+      // Verify the upsert was called with onConflict: 'user_id'
+      expect(mockSupabaseUpsert).toHaveBeenCalledWith(
+        expect.any(Object),
+        { onConflict: 'user_id' }
+      )
+
+      // Verify the returned data is the updated record
+      expect(data.userMessage).toBe('new message')
+      expect(data.assistantMessage).toBe('new response')
+      expect(data.updatedAt).toBe(secondTimestamp)
+    })
   })
 
   describe('error handling', () => {
