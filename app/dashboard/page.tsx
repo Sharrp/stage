@@ -1,8 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import LogoutButton from './LogoutButton'
-import QuackCounter from '@/components/QuackCounter'
-import { getQuackStats } from '@/lib/supabase/queries'
+import Link from 'next/link'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -15,22 +14,9 @@ export default async function DashboardPage() {
     redirect('/')
   }
 
-  // Fetch quack stats for the user
-  let quackStats = null
-  try {
-    quackStats = await getQuackStats(supabase, user.id)
-  } catch (error) {
-    console.error('Failed to fetch quack stats:', error)
-  }
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 px-4">
-      <div className="w-full max-w-[500px] space-y-8">
-        {/* Quack Counter */}
-        <div className="flex justify-center">
-          <QuackCounter initialStats={quackStats} />
-        </div>
-
+      <div className="w-full max-w-[500px] space-y-8 relative">
         {/* User Info & Logout */}
         <div className="rounded-lg bg-white p-6 shadow">
           <div className="space-y-4">
@@ -46,6 +32,15 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* Quack Link - Bottom Right */}
+        <div className="flex justify-end">
+          <Link
+            href="/quack"
+            className="text-lg font-semibold text-gray-700 hover:text-gray-900 transition-colors"
+          >
+            Wanna 🦆?
+          </Link>
+        </div>
       </div>
     </div>
   )

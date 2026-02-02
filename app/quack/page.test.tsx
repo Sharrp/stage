@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import DashboardPage from './page'
+import QuackPage from './page'
 
 // Set up environment variables
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
@@ -44,12 +44,12 @@ vi.mock('@supabase/ssr', () => ({
   })),
 }))
 
-// Mock LogoutButton component
-vi.mock('./LogoutButton', () => ({
-  default: () => <button>Logout</button>,
+// Mock QuackCounter component
+vi.mock('@/components/QuackCounter', () => ({
+  default: () => <div>QuackCounter</div>,
 }))
 
-describe('Dashboard Page', () => {
+describe('Quack Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -59,7 +59,7 @@ describe('Dashboard Page', () => {
       mockGetUser.mockResolvedValue({ data: { user: null }, error: null })
 
       try {
-        await DashboardPage()
+        await QuackPage()
       } catch (error) {
         // redirect throws an error in Next.js
       }
@@ -76,61 +76,31 @@ describe('Dashboard Page', () => {
       role: 'authenticated',
     }
 
-    it('renders dashboard when user is authenticated', async () => {
+    beforeEach(() => {
       mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      const result = await DashboardPage()
-      render(result)
-
-      expect(screen.getByText(/signed in as/i)).toBeInTheDocument()
     })
 
-    it('displays user email', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      const result = await DashboardPage()
+    it('renders quack page when user is authenticated', async () => {
+      const result = await QuackPage()
       render(result)
 
-      expect(screen.getByText(mockUser.email)).toBeInTheDocument()
+      expect(screen.getByText('QuackCounter')).toBeInTheDocument()
     })
 
-    it('displays user ID', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      const result = await DashboardPage()
+    it('renders QuackCounter component', async () => {
+      const result = await QuackPage()
       render(result)
 
-      expect(screen.getByText(/user id/i)).toBeInTheDocument()
-      expect(screen.getByText(mockUser.id)).toBeInTheDocument()
+      expect(screen.getByText('QuackCounter')).toBeInTheDocument()
     })
 
-    it('shows signed in message', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      const result = await DashboardPage()
+    it('renders back to dashboard link', async () => {
+      const result = await QuackPage()
       render(result)
 
-      expect(screen.getByText(/signed in as/i)).toBeInTheDocument()
-    })
-
-    it('renders logout button', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      const result = await DashboardPage()
-      render(result)
-
-      expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
-    })
-
-    it('renders quack link', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: mockUser }, error: null })
-
-      const result = await DashboardPage()
-      render(result)
-
-      const link = screen.getByRole('link', { name: /wanna/i })
+      const link = screen.getByRole('link', { name: /back to dashboard/i })
       expect(link).toBeInTheDocument()
-      expect(link).toHaveAttribute('href', '/quack')
+      expect(link).toHaveAttribute('href', '/dashboard')
     })
   })
 })
