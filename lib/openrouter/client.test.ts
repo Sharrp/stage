@@ -22,7 +22,7 @@ describe('OpenRouter Client', () => {
           choices: [
             {
               message: {
-                content: 'What a query, what a sight, your sarcasm burns so bright!',
+                content: 'Rhymes with line 1',
                 role: 'assistant',
               },
               finish_reason: 'stop',
@@ -43,7 +43,7 @@ describe('OpenRouter Client', () => {
     })
 
     it('returns the assistant message content', async () => {
-      const expectedMessage = 'Your code stinks, but who am I? Just a sarcastic rhyming AI!'
+      const expectedMessage = 'Sarcastic rhyming response'
 
       const mockResponse: any = {
         ok: true,
@@ -91,10 +91,10 @@ describe('OpenRouter Client', () => {
 
       const callArgs = mockFetch.mock.calls[0]
       const requestBody = JSON.parse(callArgs[1]?.body as string)
-      expect(requestBody.model).toBe('anthropic/claude-3.5-haiku')
+      expect(requestBody.model).toBe('meta-llama/llama-3.1-8b-instruct')
     })
 
-    it('includes messages with user role and content', async () => {
+    it('includes messages with user role and content wrapped with prefix/suffix', async () => {
       const mockResponse: any = {
         ok: true,
         json: async () => ({
@@ -117,7 +117,9 @@ describe('OpenRouter Client', () => {
       const userMessage = requestBody.messages.find((m: any) => m.role === 'user')
 
       expect(userMessage).toBeDefined()
-      expect(userMessage.content).toBe('hello world')
+      expect(userMessage.content).toContain('We write a 2-line poem together')
+      expect(userMessage.content).toContain('hello world')
+      expect(userMessage.content).toContain('Second line (from you):')
     })
 
     it('includes system message in messages array', async () => {
@@ -143,7 +145,9 @@ describe('OpenRouter Client', () => {
       const systemMessage = requestBody.messages.find((m: any) => m.role === 'system')
 
       expect(systemMessage).toBeDefined()
-      expect(systemMessage.content).toContain('sarcastic poet')
+      expect(systemMessage.content).toContain('2-line poem')
+      expect(systemMessage.content).toContain('sarcastic')
+      expect(systemMessage.content).toContain('rhyme')
     })
   })
 
