@@ -2,6 +2,30 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import LogoutButton from './LogoutButton'
 import Link from 'next/link'
+import ChatInterface from '@/components/ChatInterface'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '@/lib/supabase/database.types'
+
+async function getLastChatMessage(
+  supabase: SupabaseClient<Database>,
+  userId: string
+): Promise<{ userMessage: string; assistantMessage: string } | null> {
+  const { data, error } = await supabase
+    .from('chat_messages')
+    .select('user_message, assistant_message')
+    .eq('user_id', userId)
+    .single()
+
+  if (error) {
+    if (error.code === 'PGRST116') return null // No rows
+    throw error
+  }
+
+  return {
+    userMessage: data.user_message,
+    assistantMessage: data.assistant_message,
+  }
+}
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -13,6 +37,8 @@ export default async function DashboardPage() {
   if (!user) {
     redirect('/')
   }
+
+  const lastMessage = await getLastChatMessage(supabase, user.id)
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 px-4">
@@ -31,6 +57,9 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* Chat Interface */}
+        <ChatInterface initialMessage={lastMessage} />
 
         {/* Quack Link - Bottom Right */}
         <div className="flex justify-end">

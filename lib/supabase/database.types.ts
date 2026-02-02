@@ -55,6 +55,29 @@ export type Database = {
           updated_at?: string;
         };
       };
+      chat_messages: {
+        Row: {
+          id: string;
+          user_id: string;
+          user_message: string;
+          assistant_message: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          user_message: string;
+          assistant_message: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_message?: string;
+          assistant_message?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: {};
     Functions: {};
@@ -91,3 +114,8 @@ export type QuackStatsInsert = Database['public']['Tables']['quack_stats']['Inse
  * Type alias for QuackStats update
  */
 export type QuackStatsUpdate = Database['public']['Tables']['quack_stats']['Update'];
+
+/**
+ * Type alias for ChatMessage table row
+ */
+export type ChatMessage = Database['public']['Tables']['chat_messages']['Row'];
