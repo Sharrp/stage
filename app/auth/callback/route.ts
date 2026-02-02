@@ -11,15 +11,6 @@ export async function GET(request: NextRequest) {
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || requestUrl.host
   const origin = `${protocol}://${host}`
 
-  // Debug logging to diagnose redirect issue
-  console.log('=== AUTH CALLBACK DEBUG ===')
-  console.log('request.url:', request.url)
-  console.log('requestUrl.origin:', requestUrl.origin)
-  console.log('Constructed origin:', origin)
-  console.log('  from x-forwarded-proto:', request.headers.get('x-forwarded-proto'))
-  console.log('  from x-forwarded-host:', request.headers.get('x-forwarded-host'))
-  console.log('===========================')
-
   if (!code) {
     return NextResponse.redirect(`${origin}/?error=no_code`)
   }

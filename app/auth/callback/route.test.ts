@@ -100,4 +100,70 @@ describe('Auth Callback Route', () => {
 
     expect(response.headers.get('location')).toBe('http://example.com:3000/dashboard')
   })
+
+  it('uses x-forwarded-host header instead of request URL host', async () => {
+    // This test prevents regression of the 0.0.0.0:8080 redirect issue
+    // The request URL may contain 0.0.0.0 in containerized environments,
+    // but forwarded headers should be used instead
+    const request = new NextRequest('https://0.0.0.0:8080/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-proto': 'https',
+        'x-forwarded-host': 'stage-app-988044283106.us-central1.run.app',
+      },
+    })
+    mockExchangeCodeForSession.mockResolvedValue({ error: null })
+
+    const response = await GET(request)
+
+    // Should redirect to the actual domain, not 0.0.0.0
+    expect(response.headers.get('location')).toBe('https://stage-app-988044283106.us-central1.run.app/dashboard')
+    expect(response.headers.get('location')).not.toContain('0.0.0.0')
+  })
+
+  it('falls back to host header when x-forwarded-host is missing', async () => {
+    const request = new NextRequest('https://localhost:3000/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-proto': 'https',
+        'host': 'myapp.com',
+      },
+    })
+    mockExchangeCodeForSession.mockResolvedValue({ error: null })
+
+    const response = await GET(request)
+
+    expect(response.headers.get('location')).toBe('https://myapp.com/dashboard')
+  })
+
+  it('defaults to https when x-forwarded-proto header is missing', async () => {
+    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code', {
+      headers: {
+        'x-forwarded-host': 'example.com',
+      },
+    })
+    mockExchangeCodeForSession.mockResolvedValue({ error: null })
+
+    const response = await GET(request)
+
+    // Should use https by default even though request URL was http
+    expect(response.headers.get('location')).toBe('https://example.com/dashboard')
+  })
+
+  it('prioritizes x-forwarded-host over all other sources', async () => {
+    // This test ensures the fix for the Cloud Run redirect issue is maintained
+    // Even if request.url and host header contain 0.0.0.0, x-forwarded-host takes priority
+    const request = new NextRequest('https://0.0.0.0:8080/auth/callback?code=test-code', {
+      headers: {
+        'host': '0.0.0.0:8080',
+        'x-forwarded-proto': 'https',
+        'x-forwarded-host': 'myapp.example.com',
+      },
+    })
+    mockExchangeCodeForSession.mockResolvedValue({ error: null })
+
+    const response = await GET(request)
+
+    // Should use x-forwarded-host, not the request URL or host header
+    expect(response.headers.get('location')).toBe('https://myapp.example.com/dashboard')
+    expect(response.headers.get('location')).not.toContain('0.0.0.0')
+  })
 })
