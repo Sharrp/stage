@@ -40,18 +40,19 @@ export default async function DashboardPage() {
   const lastMessage = await getLastChatMessage(supabase, user.id)
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 px-4">
-      <div className="w-full max-w-[500px] space-y-8 relative">
+    <div className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
+      <div className="w-full max-w-[600px] space-y-8">
         {/* User Info & Logout */}
-        <div className="rounded-lg bg-white p-6 shadow">
-          <div className="space-y-4">
+        <div className="rounded-xl bg-card p-8 shadow-sm">
+          <div className="space-y-6">
             <div>
-              <p className="text-lg text-gray-600">
-                Signed in as <span className="font-mono text-sm">{user.email}</span>
+              <p className="text-base text-muted-foreground mb-2">
+                Signed in as
               </p>
-              <p className="text-sm text-gray-600">User ID: <span className="font-mono text-xs text-gray-800">{user.id}</span></p>
+              <p className="text-xl font-semibold text-foreground">{user.email}</p>
+              <p className="text-xs text-muted-foreground mt-3">User ID: <span className="font-mono">{user.id}</span></p>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-2">
               <LogoutButton />
             </div>
           </div>
@@ -64,7 +65,7 @@ export default async function DashboardPage() {
         <div className="flex justify-end">
           <Link
             href="/quack"
-            className="text-lg font-semibold text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-lg font-medium text-accent-foreground hover:text-primary transition-colors inline-flex items-center gap-2"
           >
             Wanna 🦆?
           </Link>

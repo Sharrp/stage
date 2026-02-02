@@ -92,40 +92,40 @@ export default function ChatInterface({ initialMessage }: ChatInterfaceProps) {
     isLoading;
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <div className="space-y-4">
+    <div className="rounded-xl bg-card p-8 shadow-sm">
+      <div className="space-y-6">
         {/* Messages */}
         {message ? (
-          <div className="space-y-3">
+          <div className="space-y-4 min-h-[200px]">
             {/* User bubble */}
             <div className="flex justify-end">
-              <div className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-white break-words max-w-xs">
+              <div className="rounded-2xl bg-primary px-5 py-3 text-primary-foreground break-words max-w-sm shadow-sm">
                 {message.userMessage}
               </div>
             </div>
 
             {/* Assistant bubble */}
             <div className="flex justify-start">
-              <div className="rounded-lg bg-gray-200 px-4 py-2 text-gray-900 break-words max-w-xs">
+              <div className="rounded-2xl bg-secondary px-5 py-3 text-secondary-foreground break-words max-w-sm">
                 {message.assistantMessage}
               </div>
             </div>
           </div>
         ) : (
-          <div className="py-8 text-center text-gray-500">
+          <div className="py-12 text-center text-muted-foreground min-h-[200px] flex items-center justify-center">
             Send a message to get a sarcastic rhyme!
           </div>
         )}
 
         {/* Error message */}
         {error && (
-          <div className="rounded-lg bg-red-100 px-4 py-3 text-red-700">
+          <div className="rounded-lg bg-red-50 px-4 py-3 text-red-700 text-sm shadow-sm">
             {error}
           </div>
         )}
 
         {/* Input form */}
-        <form onSubmit={handleSubmit} className="space-y-3 border-t pt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 border-t border-border pt-6">
           <div className="space-y-2">
             <input
               type="text"
@@ -133,10 +133,10 @@ export default function ChatInterface({ initialMessage }: ChatInterfaceProps) {
               onChange={(e) => setInputValue(e.target.value.slice(0, 50))}
               placeholder="Your message..."
               disabled={isLoading}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 disabled:bg-gray-100"
+              className="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 disabled:bg-muted disabled:cursor-not-allowed transition-all"
             />
             <div className="flex justify-between items-center">
-              <div className={`text-sm font-medium ${inputValue.length === 50 ? 'text-red-600' : 'text-gray-600'}`}>
+              <div className={`text-sm font-medium ${inputValue.length === 50 ? 'text-red-600' : 'text-muted-foreground'}`}>
                 {inputValue.length}/50
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function ChatInterface({ initialMessage }: ChatInterfaceProps) {
           <button
             type="submit"
             disabled={isSubmitDisabled}
-            className="w-full rounded-lg bg-[#fb607f] px-6 py-2 font-medium text-white hover:bg-[#e55670] disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground hover:bg-accent-foreground disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-all shadow-sm hover:shadow"
           >
             {isLoading ? '...' : 'Send'}
           </button>

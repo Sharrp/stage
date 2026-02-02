@@ -24,8 +24,8 @@ export default async function QuackPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 px-4">
-      <div className="w-full max-w-[500px] space-y-8">
+    <div className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
+      <div className="w-full max-w-[600px] space-y-8">
         {/* Quack Counter */}
         <div className="flex justify-center">
           <QuackCounter initialStats={quackStats} />
@@ -35,7 +35,7 @@ export default async function QuackPage() {
         <div className="flex justify-center">
           <Link
             href="/dashboard"
-            className="text-sm text-gray-600 hover:text-gray-800 underline"
+            className="text-sm text-muted-foreground hover:text-accent-foreground transition-colors inline-flex items-center gap-2"
           >
             ← Back to dashboard
           </Link>

@@ -214,17 +214,17 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
   };
 
   return (
-    <div className="flex w-full max-w-[500px] flex-col items-center justify-center space-y-6">
+    <div className="flex w-full max-w-[600px] flex-col items-center justify-center space-y-8">
       {/* Title with Quack button */}
-      <div className="text-center text-6xl md:text-[9rem] lg:text-[11rem] font-bold text-gray-900 tracking-wider uppercase leading-tight" style={{ fontSize: '3.75rem', fontWeight: '700' }}>
+      <div className="text-center text-5xl md:text-7xl font-bold text-foreground tracking-tight leading-tight">
         You can{' '}
         <button
           ref={buttonRef}
           onClick={handleQuack}
-          className={`relative border-2 border-gray-900 px-4 py-1 font-bold text-gray-900 transition-all duration-200 hover:bg-gray-900 hover:text-white ${
+          className={`relative border border-primary bg-transparent px-5 py-2 font-bold text-primary transition-all duration-200 hover:bg-primary hover:text-primary-foreground rounded-lg shadow-sm hover:shadow-md ${
             isAnimating ? 'animate-pulse' : ''
           }`}
-          style={{ fontSize: '0.6em', lineHeight: '1', verticalAlign: 'baseline' }}
+          style={{ fontSize: '0.65em', lineHeight: '1.2', verticalAlign: 'baseline' }}
         >
           Quack
         </button>
@@ -232,31 +232,31 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
       </div>
 
       {/* Stats display */}
-      <div className="grid w-full grid-cols-2 gap-4 rounded-lg bg-white p-6 shadow-lg">
+      <div className="grid w-full grid-cols-2 gap-6 rounded-xl bg-card p-8 shadow-sm">
         {/* Total Quacks */}
         <div className="text-center">
-          <p className="mb-2 text-sm font-medium uppercase tracking-wide text-orange-600">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Total Quacks
           </p>
-          <p className="text-4xl font-bold text-yellow-600">{stats.total_quacks}</p>
+          <p className="text-5xl font-bold text-primary">{stats.total_quacks}</p>
         </div>
 
         {/* Time without quacks */}
         <div className="text-center">
-          <p className="mb-2 text-sm font-medium uppercase tracking-wide text-orange-600">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Time Without Quacks
           </p>
-          <p className="text-4xl font-bold text-yellow-600">{formatTimeDuration(stats.last_quack_at)}</p>
+          <p className="text-5xl font-bold text-accent-foreground">{formatTimeDuration(stats.last_quack_at)}</p>
         </div>
       </div>
 
       {/* Error/Demo state */}
       {error && (
         <div
-          className={`w-full flex items-center justify-between rounded-lg px-4 py-3 ${
+          className={`w-full flex items-center justify-between rounded-lg px-5 py-4 shadow-sm ${
             error.includes('Demo mode')
-              ? 'bg-blue-100 text-blue-700'
-              : 'bg-red-100 text-red-700'
+              ? 'bg-blue-50 text-blue-700'
+              : 'bg-red-50 text-red-700'
           }`}
         >
           <div className="flex-1">
@@ -265,11 +265,7 @@ export default function QuackCounter({ initialStats }: QuackCounterProps) {
           {!error.includes('Demo mode') && (
             <button
               onClick={handleQuack}
-              className={`ml-3 rounded px-3 py-1 text-sm font-medium ${
-                error.includes('Demo mode')
-                  ? 'hover:bg-blue-200'
-                  : 'hover:bg-red-200'
-              }`}
+              className="ml-3 rounded-lg px-4 py-2 text-sm font-semibold hover:bg-red-100 transition-colors"
             >
               Retry
             </button>

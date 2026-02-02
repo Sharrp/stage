@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
-import { Space_Mono } from 'next/font/google'
+import { DM_Sans } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
-const spaceMono = Space_Mono({
-  weight: ['400', '700'],
+const dmSans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-space-mono',
+  variable: '--font-dm',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -19,8 +20,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={spaceMono.className}>{children}</body>
+    <html lang="en" className={dmSans.variable} suppressHydrationWarning>
+      <body className="font-sans antialiased">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
