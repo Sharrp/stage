@@ -36,6 +36,8 @@ supabase migration up --linked
 ## Migration Files
 
 - **001_initial_schema.sql** - Initial database schema with user profiles and quack stats tables, RLS policies, and trigger functions
+- **002_add_user_profiles_insert_policy.sql** - Adds INSERT RLS policy for user_profiles table
+- **003_chat_messages.sql** - Chat messages table with one message per user, message length validation, and automatic updated_at tracking
 
 ## Schema Overview
 
@@ -43,6 +45,7 @@ supabase migration up --linked
 
 - **user_profiles**: Stores user profile information, linked to Supabase auth users
 - **quack_stats**: Tracks user quack statistics and activity
+- **chat_messages**: Stores chat conversation messages (one per user). Contains user message (max 50 characters) and assistant message with automatic timestamp tracking
 
 ### Security
 
