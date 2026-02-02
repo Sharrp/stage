@@ -40,35 +40,30 @@ export default async function DashboardPage() {
   const lastMessage = await getLastChatMessage(supabase, user.id)
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
-      <div className="w-full max-w-[600px] space-y-8">
-        {/* User Info & Logout */}
-        <div className="rounded-xl bg-card p-8 shadow-sm">
-          <div className="space-y-6">
-            <div>
-              <p className="text-base text-muted-foreground mb-2">
-                Signed in as
-              </p>
-              <p className="text-xl font-semibold text-foreground">{user.email}</p>
-              <p className="text-xs text-muted-foreground mt-3">User ID: <span className="font-mono">{user.id}</span></p>
-            </div>
-            <div className="flex justify-center pt-2">
-              <LogoutButton />
-            </div>
-          </div>
+    <div className="relative min-h-screen bg-background px-6 py-12">
+      {/* User Info & Logout - Top Left */}
+      <div className="absolute top-6 left-6 flex items-center gap-4">
+        <div className="text-sm text-muted-foreground">
+          {user.email}
         </div>
+        <LogoutButton />
+      </div>
 
-        {/* Chat Interface */}
-        <ChatInterface initialMessage={lastMessage} />
+      {/* Main Content - Centered */}
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="w-full max-w-[600px] space-y-8">
+          {/* Chat Interface */}
+          <ChatInterface initialMessage={lastMessage} />
 
-        {/* Quack Link - Bottom Right */}
-        <div className="flex justify-end">
-          <Link
-            href="/quack"
-            className="text-lg font-medium text-accent-foreground hover:text-primary transition-colors inline-flex items-center gap-2"
-          >
-            Wanna 🦆?
-          </Link>
+          {/* Quack Link - Bottom Right */}
+          <div className="flex justify-end">
+            <Link
+              href="/quack"
+              className="text-lg font-medium text-accent-foreground hover:text-primary transition-colors inline-flex items-center gap-2"
+            >
+              Wanna 🦆?
+            </Link>
+          </div>
         </div>
       </div>
     </div>
