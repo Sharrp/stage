@@ -1,9 +1,11 @@
 import { OpenRouterResponse, OpenRouterError } from './types';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'anthropic/claude-3.5-haiku';
+const MODEL = 'meta-llama/llama-3.1-8b-instruct';
 const SYSTEM_PROMPT =
-  'You are a sarcastic poet. Respond to user messages with short, rhyming, sarcastic responses. Keep it under 100 characters.';
+  'We are writing a 2-line poem together: the user provides line 1, you provide line 2 only. Output MUST be exactly one line (line 2), no quotes, no extra text. Line 2 must be 3–8 words, sarcastic but not cruel, and it must rhyme with the user’s line 1 by matching the final word’s ending sound; if unsure, repeat the user’s final word as your final word. No profanity, slurs, emojis. Total output ≤70 characters.';
+const USER_PREFIX = 'We write a 2-line poem together. I provide line 1, you provide line 2 only. First line: "';
+const USER_SUFFIX = '" . Second line (from you): '
 
 export async function sendChatMessage(userMessage: string): Promise<string> {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -28,7 +30,7 @@ export async function sendChatMessage(userMessage: string): Promise<string> {
           },
           {
             role: 'user',
-            content: userMessage,
+            content: USER_PREFIX + userMessage + USER_SUFFIX,
           },
         ],
       }),
