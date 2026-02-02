@@ -7,6 +7,24 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get('code')
   const origin = requestUrl.origin
 
+  // Debug logging to diagnose redirect issue
+  console.log('=== AUTH CALLBACK DEBUG ===')
+  console.log('request.url:', request.url)
+  console.log('requestUrl.origin:', requestUrl.origin)
+  console.log('requestUrl.protocol:', requestUrl.protocol)
+  console.log('requestUrl.host:', requestUrl.host)
+  console.log('requestUrl.hostname:', requestUrl.hostname)
+  console.log('requestUrl.port:', requestUrl.port)
+  console.log('')
+  console.log('Headers:')
+  console.log('  host:', request.headers.get('host'))
+  console.log('  x-forwarded-host:', request.headers.get('x-forwarded-host'))
+  console.log('  x-forwarded-proto:', request.headers.get('x-forwarded-proto'))
+  console.log('  x-forwarded-for:', request.headers.get('x-forwarded-for'))
+  console.log('  x-real-ip:', request.headers.get('x-real-ip'))
+  console.log('  forwarded:', request.headers.get('forwarded'))
+  console.log('===========================')
+
   if (!code) {
     return NextResponse.redirect(`${origin}/?error=no_code`)
   }
