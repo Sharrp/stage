@@ -17,15 +17,15 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
       <div className="text-center max-w-3xl">
-        <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-foreground tracking-tight leading-tight mb-6">
+        <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold text-foreground tracking-tight leading-tight mb-12">
           Under const<span className="text-primary">r</span>uction
         </h1>
 
-        <p className="text-lg md:text-xl text-muted-foreground mb-12 leading-relaxed">
+        {/* <p className="text-lg md:text-xl text-muted-foreground mb-12 leading-relaxed">
           We&apos;re building something special. Sign in to get started.
-        </p>
+        </p> */}
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-8">
           <GoogleLoginButton />
         </div>
       </div>
