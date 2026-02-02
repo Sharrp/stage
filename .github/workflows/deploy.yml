@@ -79,7 +79,7 @@ jobs:
             --platform managed \
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
-            --set-env-vars="NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }},NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" \
+            --set-env-vars="NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }},NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }},NEXT_PUBLIC_SITE_URL=https://stage-app-988044283106.us-central1.run.app,OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" \
             --quiet
 
       - name: Get Service URL
