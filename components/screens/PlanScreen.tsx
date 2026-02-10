@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
 import { generatedPlan } from '@/lib/mock-data'
 import { PlanPhase } from '@/lib/types'
+import { StepIndicator } from '../StepIndicator'
 
 export function PlanScreen() {
   const { goToScreen, setPlan } = useWorkflow()
@@ -44,10 +45,15 @@ export function PlanScreen() {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
       {/* Header */}
       <div className="border-b border-gray-200 px-8 py-6">
-        <h1 className="text-3xl font-bold">Your Execution Plan</h1>
-        <p className="text-sm text-gray-600 mt-2">
-          {phases.length} phases, {totalTasks} tasks • Review and approve before we start
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">Your Execution Plan</h1>
+            <p className="text-sm text-gray-600 mt-2">
+              {phases.length} phases, {totalTasks} tasks • Review and approve before we start
+            </p>
+          </div>
+          <StepIndicator />
+        </div>
       </div>
 
       {/* Main Content */}

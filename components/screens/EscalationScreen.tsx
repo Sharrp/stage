@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
+import { StepIndicator } from '../StepIndicator'
 
 export function EscalationScreen() {
   const { goToScreen } = useWorkflow()
@@ -44,8 +45,13 @@ export function EscalationScreen() {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
       {/* Header */}
       <div className="border-b border-gray-200 px-8 py-6">
-        <h1 className="text-3xl font-bold">Missing Data Blocker</h1>
-        <p className="text-sm text-gray-600 mt-2">Choose how to proceed</p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">Missing Data Blocker</h1>
+            <p className="text-sm text-gray-600 mt-2">Choose how to proceed</p>
+          </div>
+          <StepIndicator />
+        </div>
       </div>
 
       {/* Main Content */}

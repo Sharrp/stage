@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
+import { StepIndicator } from '../StepIndicator'
 
 export function FinalScreen() {
   const { state, goToScreen, reset } = useWorkflow()
@@ -77,8 +78,13 @@ export function FinalScreen() {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
       {/* Header */}
       <div className="border-b border-gray-200 px-8 py-6">
-        <h1 className="text-3xl font-bold">✓ Decision Package Complete</h1>
-        <p className="text-sm text-gray-600 mt-2">All deliverables ready for download</p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">✓ Decision Package Complete</h1>
+            <p className="text-sm text-gray-600 mt-2">All deliverables ready for download</p>
+          </div>
+          <StepIndicator />
+        </div>
       </div>
 
       {/* Main Content */}

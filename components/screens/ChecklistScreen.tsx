@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
 import { checklistItems as initialItems } from '@/lib/mock-data'
 import { ChecklistItem } from '@/lib/types'
+import { StepIndicator } from '../StepIndicator'
 
 export function ChecklistScreen() {
   const { goToScreen, setChecklist } = useWorkflow()
@@ -82,8 +83,13 @@ export function ChecklistScreen() {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
       {/* Header */}
       <div className="border-b border-gray-200 px-8 py-6">
-        <h1 className="text-3xl font-bold">What data do you have?</h1>
-        <p className="text-sm text-gray-600 mt-2">Uploaded {uploadedCount} of {items.length} documents</p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">What data do you have?</h1>
+            <p className="text-sm text-gray-600 mt-2">Uploaded {uploadedCount} of {items.length} documents</p>
+          </div>
+          <StepIndicator />
+        </div>
       </div>
 
       {/* Main Content with Sidebar */}

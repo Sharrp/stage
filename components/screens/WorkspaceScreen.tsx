@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
 import { initialArtifacts, generatedPlan } from '@/lib/mock-data'
 import { Artifact, PlanPhase } from '@/lib/types'
+import { StepIndicator } from '../StepIndicator'
 
 export function WorkspaceScreen() {
   const { goToScreen, setArtifacts } = useWorkflow()
@@ -67,8 +68,13 @@ export function WorkspaceScreen() {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
       {/* Header */}
       <div className="border-b border-gray-200 px-8 py-6">
-        <h1 className="text-3xl font-bold">Workspace</h1>
-        <p className="text-sm text-gray-600 mt-2">Phase {currentPhase + 1} of {generatedPlan.length}</p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">Workspace</h1>
+            <p className="text-sm text-gray-600 mt-2">Phase {currentPhase + 1} of {generatedPlan.length}</p>
+          </div>
+          <StepIndicator />
+        </div>
       </div>
 
       <div className="flex h-screen overflow-hidden">

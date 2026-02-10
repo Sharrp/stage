@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
 import { IntakeData } from '@/lib/types'
 import { driverDescriptions, involvementLevelDescriptions } from '@/lib/mock-data'
+import { StepIndicator } from '../StepIndicator'
 
 const quickStarts = [
   { label: 'Raising prices 20%', description: 'Simple price increase for existing model' },
@@ -34,8 +35,13 @@ export function IntakeScreen() {
     <div className="min-h-screen bg-white text-gray-900">
       {/* Header */}
       <div className="border-b border-gray-200 px-8 py-6">
-        <h1 className="text-3xl font-bold">Pricing Decision Assistant</h1>
-        <p className="text-sm text-gray-600 mt-2">Navigate complex pricing changes with AI guidance</p>
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-3xl font-bold">Pricing Decision Assistant</h1>
+            <p className="text-sm text-gray-600 mt-2">Navigate complex pricing changes with AI guidance</p>
+          </div>
+          <StepIndicator />
+        </div>
       </div>
 
       {/* Main Content */}
