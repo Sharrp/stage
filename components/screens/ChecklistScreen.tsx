@@ -7,6 +7,7 @@ import { checklistItems as initialItems } from '@/lib/mock-data'
 import { ChecklistItem } from '@/lib/types'
 import { StepIndicator } from '../StepIndicator'
 import { BackButton } from '../BackButton'
+import { ContextInput } from '../ContextInput'
 
 export function ChecklistScreen() {
   const { goToScreen, setChecklist } = useWorkflow()
@@ -82,76 +83,78 @@ export function ChecklistScreen() {
         </div>
       </div>
 
-      {/* Main Content with Sidebar */}
-      <div className="flex min-h-[calc(100vh-100px)]">
-        {/* Main Content */}
-        <div className="mx-auto max-w-4xl px-8 py-12 flex-1">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-12"
-          >
-            {/* Required Section */}
-            <div>
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold flex items-center gap-2">
-                  <span className="text-red-500">*</span> Required Data
-                </h2>
-                <p className="text-sm text-gray-600 mt-2">
-                  Missing required data will be noted—we&apos;ll use assumptions but flag confidence levels
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                {requiredItems.map((item) => (
-                  <ChecklistItemRow
-                    key={item.id}
-                    item={item}
-                    isBlocked={blockedItems.has(item.id)}
-                    onToggleBlocked={() => toggleBlocked(item.id)}
-                    onUpload={(file) => handleFileUpload(item.id, file)}
-                    statusIcon={getStatusIcon(item.status)}
-                  />
-                ))}
-              </div>
+      {/* Main Content */}
+      <div className="mx-auto max-w-4xl px-8 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-12"
+        >
+          {/* Required Section */}
+          <div>
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <span className="text-red-500">*</span> Required Data
+              </h2>
+              <p className="text-sm text-gray-600 mt-2">
+                Missing required data will be noted—we&apos;ll use assumptions but flag confidence levels
+              </p>
             </div>
 
-            {/* Nice-to-Have Section */}
-            <div>
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold">Nice-to-Have Data</h2>
-                <p className="text-sm text-gray-600 mt-2">
-                  These improve accuracy but aren&apos;t blockers
-                </p>
-              </div>
+            <div className="space-y-3">
+              {requiredItems.map((item) => (
+                <ChecklistItemRow
+                  key={item.id}
+                  item={item}
+                  isBlocked={blockedItems.has(item.id)}
+                  onToggleBlocked={() => toggleBlocked(item.id)}
+                  onUpload={(file) => handleFileUpload(item.id, file)}
+                  statusIcon={getStatusIcon(item.status)}
+                />
+              ))}
+            </div>
+          </div>
 
-              <div className="space-y-3">
-                {niceToHaveItems.map((item) => (
-                  <ChecklistItemRow
-                    key={item.id}
-                    item={item}
-                    isBlocked={blockedItems.has(item.id)}
-                    onToggleBlocked={() => toggleBlocked(item.id)}
-                    onUpload={(file) => handleFileUpload(item.id, file)}
-                    statusIcon={getStatusIcon(item.status)}
-                  />
-                ))}
-              </div>
+          {/* Nice-to-Have Section */}
+          <div>
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold">Nice-to-Have Data</h2>
+              <p className="text-sm text-gray-600 mt-2">
+                These improve accuracy but aren&apos;t blockers
+              </p>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-4 pt-8">
-              <BackButton />
-              <button
-                onClick={handleContinue}
-                className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-medium text-white hover:from-blue-700 hover:to-blue-800 transition-all"
-              >
-                {missingRequired > 0 ? `Continue with ${missingRequired} gaps` : 'All set'}
-              </button>
+            <div className="space-y-3">
+              {niceToHaveItems.map((item) => (
+                <ChecklistItemRow
+                  key={item.id}
+                  item={item}
+                  isBlocked={blockedItems.has(item.id)}
+                  onToggleBlocked={() => toggleBlocked(item.id)}
+                  onUpload={(file) => handleFileUpload(item.id, file)}
+                  statusIcon={getStatusIcon(item.status)}
+                />
+              ))}
             </div>
-          </motion.div>
-        </div>
+          </div>
+
+          {/* Context Section */}
+          <div>
+            <ContextInput />
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-4 pt-8">
+            <BackButton />
+            <button
+              onClick={handleContinue}
+              className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-medium text-white hover:from-blue-700 hover:to-blue-800 transition-all"
+            >
+              {missingRequired > 0 ? `Continue with ${missingRequired} gaps` : 'All set'}
+            </button>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

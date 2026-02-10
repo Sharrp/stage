@@ -47,6 +47,16 @@ export interface Artifact {
   preview: string
 }
 
+export interface ContextItem {
+  id: string
+  type: 'text' | 'image' | 'document' | 'link'
+  label: string
+  content?: string
+  file?: File
+  url?: string
+  addedAt: number
+}
+
 export interface WorkflowState {
   screen: ScreenType
   intake?: IntakeData
@@ -55,6 +65,7 @@ export interface WorkflowState {
   artifacts?: Artifact[]
   currentPhase?: string
   checkpointData?: unknown
+  contextItems?: ContextItem[]
 }
 
 export interface CheckpointPrompt {

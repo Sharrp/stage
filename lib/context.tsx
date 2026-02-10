@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState } from 'react'
-import { WorkflowState, ScreenType, IntakeData, ChecklistItem, PlanPhase, Artifact } from './types'
+import { WorkflowState, ScreenType, IntakeData, ChecklistItem, PlanPhase, Artifact, ContextItem } from './types'
 
 interface WorkflowContextType {
   state: WorkflowState
@@ -11,6 +11,8 @@ interface WorkflowContextType {
   setPlan: (phases: PlanPhase[]) => void
   setArtifacts: (artifacts: Artifact[]) => void
   updateArtifact: (id: string, artifact: Partial<Artifact>) => void
+  addContextItem: (item: ContextItem) => void
+  removeContextItem: (id: string) => void
   reset: () => void
 }
 
@@ -46,12 +48,26 @@ export function WorkflowProvider({ children }: { children: React.ReactNode }) {
     }))
   }
 
+  const addContextItem = (item: ContextItem) => {
+    setState((prev) => ({
+      ...prev,
+      contextItems: [...(prev.contextItems || []), item],
+    }))
+  }
+
+  const removeContextItem = (id: string) => {
+    setState((prev) => ({
+      ...prev,
+      contextItems: prev.contextItems?.filter((item) => item.id !== id) || [],
+    }))
+  }
+
   const reset = () => {
     setState({ screen: 'intake' })
   }
 
   return (
-    <WorkflowContext.Provider value={{ state, goToScreen, setIntake, setChecklist, setPlan, setArtifacts, updateArtifact, reset }}>
+    <WorkflowContext.Provider value={{ state, goToScreen, setIntake, setChecklist, setPlan, setArtifacts, updateArtifact, addContextItem, removeContextItem, reset }}>
       {children}
     </WorkflowContext.Provider>
   )
