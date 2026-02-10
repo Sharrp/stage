@@ -113,13 +113,6 @@ export function WorkspaceScreen() {
                 ))}
               </div>
             </div>
-
-            <div className="rounded-lg border-2 border-gray-200 bg-white p-6">
-              <h3 className="text-sm font-bold uppercase text-gray-600 mb-4">💡 Mock Data</h3>
-              <p className="text-xs text-gray-600">
-                Simulation running with sample data. Results are for demonstration.
-              </p>
-            </div>
           </div>
         </div>
 

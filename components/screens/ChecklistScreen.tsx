@@ -84,13 +84,14 @@ export function ChecklistScreen() {
       </div>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-4xl px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-12"
-        >
+      <div className="mx-auto max-w-5xl px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="lg:col-span-2 space-y-12"
+          >
           {/* Required Section */}
           <div>
             <div className="mb-6">
@@ -154,7 +155,58 @@ export function ChecklistScreen() {
               {missingRequired > 0 ? `Continue with ${missingRequired} gaps` : 'All set'}
             </button>
           </div>
-        </motion.div>
+          </motion.div>
+
+          {/* Right sidebar - Mock Data */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <div className="sticky top-8 rounded-lg border-2 border-gray-200 bg-gray-50 p-6">
+              <h3 className="text-sm font-bold uppercase text-gray-600 mb-4">💡 Mock Data</h3>
+              <p className="text-xs text-gray-600 mb-4">
+                Fill example files:
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  const newUploaded = new Map(uploadedFiles)
+                  const updatedItems = items.map((item) => {
+                    if (requiredItems.some(i => i.id === item.id)) {
+                      const mockFile = new File(['mock data'], `${item.id}.pdf`, { type: 'application/pdf' })
+                      newUploaded.set(item.id, mockFile)
+                      return { ...item, status: 'uploaded' as const, file: mockFile }
+                    }
+                    return item
+                  })
+                  setUploadedFiles(newUploaded)
+                  setItems(updatedItems)
+                }}
+                className="w-full text-left text-sm px-3 py-2 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium transition-all border border-blue-200 mb-2"
+              >
+                ↓ Fill required
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const newUploaded = new Map(uploadedFiles)
+                  const updatedItems = items.map((item) => {
+                    const mockFile = new File(['mock data'], `${item.id}.pdf`, { type: 'application/pdf' })
+                    newUploaded.set(item.id, mockFile)
+                    return { ...item, status: 'uploaded' as const, file: mockFile }
+                  })
+                  setUploadedFiles(newUploaded)
+                  setItems(updatedItems)
+                }}
+                className="w-full text-left text-sm px-3 py-2 rounded bg-green-50 hover:bg-green-100 text-green-700 font-medium transition-all border border-green-200"
+              >
+                ↓ Fill all files
+              </button>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   )
