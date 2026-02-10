@@ -57,14 +57,14 @@ export function IntakeScreen() {
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             <h1 className={`text-3xl font-bold transition-all duration-300 ${
-              hasDescription ? 'text-blue-600' : 'text-gray-900'
+              hasDescription ? 'text-blue-600' : 'text-gray-400'
             }`}>
-              {hasDescription ? dynamicTitle : 'Pricing Decision Assistant'}
+              {hasDescription ? dynamicTitle : 'Humbly waiting...'}
             </h1>
             <p className="text-sm text-gray-600 mt-2">
               {hasDescription
                 ? 'Provide details so we can build your decision package'
-                : 'Navigate complex pricing changes with AI guidance'
+                : 'Tell us what pricing change you\'re considering'
               }
             </p>
           </div>
@@ -196,49 +196,23 @@ export function IntakeScreen() {
             </form>
           </motion.div>
 
-          {/* Right sidebar - Mock buttons (appears conditionally) */}
+          {/* Right sidebar - Mock button for description */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: hasDescription ? 1 : 0, x: hasDescription ? 0 : 20 }}
-            transition={{ duration: 0.3 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-1"
           >
-            {!hasDescription ? (
-              <div className="sticky top-8 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
-                <h3 className="text-sm font-bold uppercase text-blue-700 mb-3">💡 Tip</h3>
-                <p className="text-sm text-blue-700">
-                  Start typing to describe your pricing change. The form will adapt as you provide details.
-                </p>
-              </div>
-            ) : (
-              <div className="sticky top-8 rounded-lg border-2 border-gray-200 bg-gray-50 p-6">
-                <h3 className="text-sm font-bold uppercase text-gray-600 mb-4">💡 Quick Fill</h3>
-                <div className="space-y-3">
-                  <button
-                    type="button"
-                    onClick={() => setDriver('revenue')}
-                    className={`w-full text-left text-sm px-3 py-2 rounded font-medium transition-all border ${
-                      driver === 'revenue'
-                        ? 'bg-green-100 hover:bg-green-200 text-green-700 border-green-300'
-                        : 'bg-green-50 hover:bg-green-100 text-green-700 border-green-200'
-                    }`}
-                  >
-                    ↓ Set: Revenue Driver
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setInvolvementLevel('checkpoint')}
-                    className={`w-full text-left text-sm px-3 py-2 rounded font-medium transition-all border ${
-                      involvementLevel === 'checkpoint'
-                        ? 'bg-purple-100 hover:bg-purple-200 text-purple-700 border-purple-300'
-                        : 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200'
-                    }`}
-                  >
-                    ↓ Set: Checkpoint Level
-                  </button>
-                </div>
-              </div>
-            )}
+            <div className="sticky top-8 rounded-lg border-2 border-gray-200 bg-gray-50 p-6">
+              <h3 className="text-sm font-bold uppercase text-gray-600 mb-4">💡 Mock Data</h3>
+              <button
+                type="button"
+                onClick={() => setSituation("We're currently charging per seat at $100/user/month but want to transition to a usage-based model to better align with customer value and improve margins.")}
+                className="w-full text-left text-sm px-3 py-2 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium transition-all border border-blue-200"
+              >
+                ↓ Fill example situation
+              </button>
+            </div>
           </motion.div>
         </div>
       </div>
