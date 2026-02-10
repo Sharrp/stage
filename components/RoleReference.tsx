@@ -67,37 +67,37 @@ export function RoleReference() {
             className="fixed inset-0 flex items-center justify-center p-4 z-50"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-700 shadow-2xl">
+            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg bg-gradient-to-b from-white to-gray-50 border border-gray-300 shadow-2xl">
               {/* Header */}
-              <div className="sticky top-0 border-b border-slate-700 bg-slate-950 px-8 py-6 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-white">Who Does What?</h2>
+              <div className="sticky top-0 border-b border-gray-200 bg-white px-8 py-6 flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-gray-900">Who Does What?</h2>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Content */}
-              <div className="px-8 py-8 space-y-12 text-white">
+              <div className="px-8 py-8 space-y-12 text-gray-900">
                 {/* System Responsibilities */}
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-2xl">🤖</span>
-                    <h3 className="text-lg font-semibold">Agent Responsibilities</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Agent Responsibilities</h3>
                   </div>
-                  <p className="text-sm text-slate-400 mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     Analysis, modeling, documentation, and decision support
                   </p>
                   <div className="space-y-2">
                     {systemRoles.map((role) => (
                       <div
                         key={role}
-                        className="flex items-start gap-3 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20"
+                        className="flex items-start gap-3 p-3 rounded-lg bg-purple-100 border border-purple-300"
                       >
-                        <span className="text-purple-400 mt-0.5">→</span>
-                        <span className="text-sm">{role}</span>
+                        <span className="text-purple-700 mt-0.5">→</span>
+                        <span className="text-sm text-gray-900">{role}</span>
                       </div>
                     ))}
                   </div>
@@ -107,19 +107,19 @@ export function RoleReference() {
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-2xl">👤</span>
-                    <h3 className="text-lg font-semibold">Your Responsibilities</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Your Responsibilities</h3>
                   </div>
-                  <p className="text-sm text-slate-400 mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     Strategic judgment, decisions, approvals, and stakeholder leadership
                   </p>
                   <div className="space-y-2">
                     {userRoles.map((role) => (
                       <div
                         key={role}
-                        className="flex items-start gap-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20"
+                        className="flex items-start gap-3 p-3 rounded-lg bg-blue-100 border border-blue-300"
                       >
-                        <span className="text-blue-400 mt-0.5">→</span>
-                        <span className="text-sm">{role}</span>
+                        <span className="text-blue-700 mt-0.5">→</span>
+                        <span className="text-sm text-gray-900">{role}</span>
                       </div>
                     ))}
                   </div>
@@ -129,28 +129,28 @@ export function RoleReference() {
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-2xl">🚫</span>
-                    <h3 className="text-lg font-semibold">Can&apos;t Automate (you own these)</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Can&apos;t Automate (you own these)</h3>
                   </div>
-                  <p className="text-sm text-slate-400 mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     Requires human relationships, external context, or accountability
                   </p>
                   <div className="space-y-2">
                     {cantAutomate.map((item) => (
                       <div
                         key={item}
-                        className="flex items-start gap-3 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"
+                        className="flex items-start gap-3 p-3 rounded-lg bg-orange-100 border border-orange-300"
                       >
-                        <span className="text-orange-400 mt-0.5">⚠</span>
-                        <span className="text-sm">{item}</span>
+                        <span className="text-orange-700 mt-0.5">⚠</span>
+                        <span className="text-sm text-gray-900">{item}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Key Principle */}
-                <div className="rounded-lg border border-slate-700 bg-slate-800 p-4">
-                  <p className="text-sm">
-                    <strong className="text-blue-400">Key Principle:</strong> You stay in control of all strategic
+                <div className="rounded-lg border border-gray-300 bg-white p-4">
+                  <p className="text-sm text-gray-700">
+                    <strong className="text-blue-600">Key Principle:</strong> You stay in control of all strategic
                     decisions. The system does analytical heavy lifting and helps you present options clearly.
                   </p>
                 </div>

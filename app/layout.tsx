@@ -22,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmSans.variable}`} suppressHydrationWarning>
-      <body className="font-sans antialiased bg-slate-950">
-        <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
+      <body className="font-sans antialiased bg-white text-gray-900">
+        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           <WorkflowProvider>
             {children}
           </WorkflowProvider>

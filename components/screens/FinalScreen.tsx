@@ -74,11 +74,11 @@ export function FinalScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
       {/* Header */}
-      <div className="border-b border-slate-800 px-8 py-6">
+      <div className="border-b border-gray-200 px-8 py-6">
         <h1 className="text-3xl font-bold">✓ Decision Package Complete</h1>
-        <p className="text-sm text-slate-400 mt-2">All deliverables ready for download</p>
+        <p className="text-sm text-gray-600 mt-2">All deliverables ready for download</p>
       </div>
 
       {/* Main Content */}
@@ -90,7 +90,7 @@ export function FinalScreen() {
         >
           {/* Main Deliverables */}
           <div>
-            <h2 className="text-lg font-semibold mb-6">Deliverables</h2>
+            <h2 className="text-lg font-semibold mb-6 text-gray-900">Deliverables</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {deliverables.map((deliverable) => (
                 <motion.button
@@ -99,8 +99,8 @@ export function FinalScreen() {
                   whileHover={{ y: -4 }}
                   className={`rounded-lg border-2 p-6 text-left transition-all ${
                     selectedForDownload.includes(deliverable.id)
-                      ? 'border-blue-500 bg-blue-500/10'
-                      : 'border-slate-700 bg-slate-800 hover:border-slate-600'
+                      ? 'border-blue-600 bg-blue-100'
+                      : 'border-gray-300 bg-white hover:border-gray-400'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-3">
@@ -113,9 +113,9 @@ export function FinalScreen() {
                       className="cursor-pointer"
                     />
                   </div>
-                  <p className="font-semibold text-lg">{deliverable.name}</p>
-                  <p className="text-sm text-slate-400 mt-2">{deliverable.description}</p>
-                  <p className="text-xs text-slate-500 mt-3">{deliverable.sections} sections</p>
+                  <p className="font-semibold text-lg text-gray-900">{deliverable.name}</p>
+                  <p className="text-sm text-gray-600 mt-2">{deliverable.description}</p>
+                  <p className="text-xs text-gray-500 mt-3">{deliverable.sections} sections</p>
                 </motion.button>
               ))}
             </div>
@@ -123,16 +123,16 @@ export function FinalScreen() {
 
           {/* Meta-Documents */}
           <div>
-            <h2 className="text-lg font-semibold mb-4">Included in All Downloads</h2>
-            <p className="text-sm text-slate-400 mb-4">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">Included in All Downloads</h2>
+            <p className="text-sm text-gray-600 mb-4">
               These documents track decisions and confidence levels to support stakeholder alignment
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {metaDocs.map((doc) => (
-                <div key={doc.name} className="rounded-lg border border-slate-700 bg-slate-800 p-4">
+                <div key={doc.name} className="rounded-lg border border-gray-300 bg-white p-4">
                   <span className="text-2xl">{doc.icon}</span>
-                  <p className="font-semibold text-sm mt-3">{doc.name}</p>
-                  <p className="text-xs text-slate-400 mt-2">{doc.description}</p>
+                  <p className="font-semibold text-sm mt-3 text-gray-900">{doc.name}</p>
+                  <p className="text-xs text-gray-600 mt-2">{doc.description}</p>
                 </div>
               ))}
             </div>
@@ -140,37 +140,37 @@ export function FinalScreen() {
 
           {/* Sample Artifacts */}
           <div>
-            <h2 className="text-lg font-semibold mb-6">Preview: Decision Memo</h2>
-            <div className="rounded-lg border border-slate-700 bg-slate-800 p-8 space-y-4 font-mono text-xs text-slate-300 max-h-64 overflow-y-auto">
+            <h2 className="text-lg font-semibold mb-6 text-gray-900">Preview: Decision Memo</h2>
+            <div className="rounded-lg border border-gray-300 bg-gray-50 p-8 space-y-4 font-mono text-xs text-gray-700 max-h-64 overflow-y-auto">
               <div>
-                <p className="font-bold text-blue-400">PRICING DECISION MEMO</p>
-                <p className="text-slate-500 mt-1">Prepared for: Executive Team</p>
+                <p className="font-bold text-blue-600">PRICING DECISION MEMO</p>
+                <p className="text-gray-600 mt-1">Prepared for: Executive Team</p>
               </div>
-              <div className="pt-4 border-t border-slate-700">
-                <p className="font-bold">RECOMMENDATION</p>
+              <div className="pt-4 border-t border-gray-300">
+                <p className="font-bold text-gray-900">RECOMMENDATION</p>
                 <p className="mt-2">Implement hybrid pricing model with usage-based component for X segment while maintaining seat-based for Y segment.</p>
               </div>
-              <div className="pt-4 border-t border-slate-700">
-                <p className="font-bold">KEY FINDINGS</p>
+              <div className="pt-4 border-t border-gray-300">
+                <p className="font-bold text-gray-900">KEY FINDINGS</p>
                 <p className="mt-2">• Revenue impact: +$X-Y in year 1 depending on migration curve</p>
                 <p>• Churn risk: Moderate (15-20%) for segment A if not handled carefully</p>
                 <p>• Confidence: 78% based on available data; limited by churn elasticity gap</p>
               </div>
-              <div className="pt-4 border-t border-slate-700">
-                <p className="font-bold">NEXT STEPS</p>
+              <div className="pt-4 border-t border-gray-300">
+                <p className="font-bold text-gray-900">NEXT STEPS</p>
                 <p className="mt-2">1. Stakeholder review (timeline: 1 week)</p>
                 <p>2. Customer communication strategy (timeline: 2 weeks)</p>
                 <p>3. System implementation (timeline: 3-4 weeks)</p>
               </div>
             </div>
-            <p className="text-xs text-slate-400 mt-3">
+            <p className="text-xs text-gray-600 mt-3">
               ↑ This is a preview. Full document is much more detailed with appendices.
             </p>
           </div>
 
           {/* Download Section */}
-          <div className="rounded-lg border border-blue-500/30 bg-blue-500/10 p-6">
-            <p className="text-sm mb-6">
+          <div className="rounded-lg border border-blue-300 bg-blue-50 p-6">
+            <p className="text-sm mb-6 text-gray-900">
               You&apos;re downloading <strong>{selectedForDownload.length} documents</strong> in a single package (.zip) with
               a README that explains each file&apos;s purpose.
             </p>
@@ -178,13 +178,13 @@ export function FinalScreen() {
             <div className="flex gap-4">
               <button
                 onClick={() => setSelectedForDownload(deliverables.map((d) => d.id))}
-                className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
               >
                 Select All
               </button>
               <button
                 onClick={() => setSelectedForDownload([])}
-                className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
               >
                 Select None
               </button>
@@ -195,7 +195,7 @@ export function FinalScreen() {
           <div className="flex gap-4 pt-8">
             <button
               onClick={handleReset}
-              className="rounded-lg border border-slate-600 px-6 py-3 font-medium text-white hover:bg-slate-800 transition-all"
+              className="rounded-lg border border-gray-400 px-6 py-3 font-medium text-gray-900 hover:bg-gray-100 transition-all"
             >
               Start Over
             </button>
@@ -208,9 +208,9 @@ export function FinalScreen() {
           </div>
 
           {/* Footer */}
-          <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 text-xs text-slate-400">
+          <div className="rounded-lg border border-gray-300 bg-white p-4 text-xs text-gray-600">
             <p>
-              <strong>Next steps in your process:</strong> Share this package with stakeholders, gather feedback,
+              <strong className="text-gray-900">Next steps in your process:</strong> Share this package with stakeholders, gather feedback,
               and align on implementation approach. The decision log helps track approvals as they come in.
             </p>
           </div>

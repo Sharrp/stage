@@ -41,7 +41,7 @@ export const checklistItems: ChecklistItem[] = [
     name: 'Customer willingness interviews',
     category: 'nice-to-have',
     reason: 'Validate acceptance risk',
-    status: 'blocked',
+    status: 'missing',
   },
 ]
 
