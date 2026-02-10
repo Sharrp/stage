@@ -62,12 +62,15 @@ export function CheckpointScreen() {
       </div>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-2xl px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-8"
-        >
+      <div className="flex min-h-[calc(100vh-100px)]">
+        {/* Main Content */}
+        <div className="flex-1 px-8 py-12 overflow-y-auto">
+          <div className="mx-auto max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
           {/* Context Card */}
           <div className="rounded-lg border border-gray-300 bg-white p-6">
             <div className="flex items-start gap-3 mb-4">
@@ -181,7 +184,9 @@ export function CheckpointScreen() {
               </button>
             </div>
           )}
-        </motion.div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   )

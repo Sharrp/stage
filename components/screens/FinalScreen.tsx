@@ -89,12 +89,15 @@ export function FinalScreen() {
       </div>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-4xl px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-12"
-        >
+      <div className="flex min-h-[calc(100vh-100px)]">
+        {/* Main Content */}
+        <div className="flex-1 px-8 py-12 overflow-y-auto">
+          <div className="mx-auto max-w-4xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-12"
+            >
           {/* Main Deliverables */}
           <div>
             <h2 className="text-lg font-semibold mb-6 text-gray-900">Deliverables</h2>
@@ -216,7 +219,9 @@ export function FinalScreen() {
               and align on implementation approach. The decision log helps track approvals as they come in.
             </p>
           </div>
-        </motion.div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   )

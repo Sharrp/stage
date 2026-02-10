@@ -58,7 +58,20 @@ export function PlanScreen() {
       </div>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-4xl px-8 py-12">
+      <div className="flex min-h-[calc(100vh-100px)]">
+        {/* Sidebar with Mock Data */}
+        <div className="w-64 border-r border-gray-200 bg-gray-50 p-6">
+          <div className="sticky top-8 rounded-lg border-2 border-gray-200 bg-white p-6">
+            <h3 className="text-sm font-bold uppercase text-gray-600 mb-4">💡 Mock Data</h3>
+            <p className="text-xs text-gray-600 mb-3">
+              This execution plan is pre-populated based on your inputs.
+            </p>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 px-8 py-12 overflow-y-auto">
+          <div className="mx-auto max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -134,6 +147,8 @@ export function PlanScreen() {
             </button>
           </div>
         </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   )

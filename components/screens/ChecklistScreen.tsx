@@ -46,17 +46,6 @@ export function ChecklistScreen() {
     setBlockedItems(newBlocked)
   }
 
-  const fillWithMocks = () => {
-    const mockFiles = initialItems.reduce((acc, item) => {
-      acc.set(item.id, new File([`Sample content for ${item.name}`], `${item.name}.txt`))
-      return acc
-    }, new Map<string, File>())
-    setUploadedFiles(mockFiles)
-    setItems(
-      items.map((item) => ({ ...item, status: 'uploaded', file: mockFiles.get(item.id) }))
-    )
-  }
-
   const handleContinue = () => {
     setChecklist(items)
     goToScreen('plan')
@@ -95,23 +84,6 @@ export function ChecklistScreen() {
 
       {/* Main Content with Sidebar */}
       <div className="flex min-h-[calc(100vh-100px)]">
-        {/* Sidebar with Mock Fill Button */}
-        <div className="w-64 border-r border-gray-200 bg-gray-50 p-6 flex flex-col gap-4">
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase mb-3">Quick Actions</p>
-            <button
-              onClick={fillWithMocks}
-              className="w-full px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm transition-all"
-            >
-              Fill with Sample Files
-            </button>
-          </div>
-          <div className="text-xs text-gray-500">
-            <p className="font-semibold mb-2">Status: {uploadedCount}/{items.length}</p>
-            <p>Blocked: {blockedItems.size}</p>
-          </div>
-        </div>
-
         {/* Main Content */}
         <div className="mx-auto max-w-4xl px-8 py-12 flex-1">
           <motion.div
