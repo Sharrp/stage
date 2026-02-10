@@ -1,0 +1,279 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    PRICING DECISION SUPPORT PROTOTYPE                            ║
+║                                                                                  ║
+║                          http://localhost:3000                                   ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ WHAT'S BUILT                                                                     │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  ✓ 8 Fully Interactive Screens                                                  │
+│    • Problem Intake - describe situation, set involvement level                 │
+│    • Context Checklist - track data availability                                │
+│    • Plan Review - approve execution plan with task owners                      │
+│    • Live Workspace - real-time progress visualization                          │
+│    • Checkpoint Review - make strategic decisions                               │
+│    • Escalation - resolve blockers with tradeoff analysis                       │
+│    • Final Package - review & download deliverables                             │
+│    • Role Reference - persistent "who does what" guide                          │
+│                                                                                  │
+│  ✓ Modern UI Design                                                             │
+│    • Dark slate background (professional, high contrast)                        │
+│    • Blue/indigo accents (Linear-style)                                         │
+│    • DM Sans typography (modern, clean)                                         │
+│    • Smooth animations (Framer Motion)                                          │
+│    • Responsive layouts (sidebar + cards)                                       │
+│                                                                                  │
+│  ✓ Interactive Elements                                                         │
+│    • Text inputs with quick-start suggestions                                   │
+│    • Multi-select checkboxes for data checklist                                 │
+│    • Collapsible plan phases with task details                                  │
+│    • Live progress bars (real-time simulation)                                  │
+│    • Artifact preview cards (expandable sections)                               │
+│    • Modal dialogs (role reference)                                             │
+│    • File upload mocking                                                        │
+│                                                                                  │
+│  ✓ State Management                                                             │
+│    • React Context for workflow state                                           │
+│    • Persists user input across screens                                         │
+│    • TypeScript for type safety                                                 │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ HOW TO INTERACT                                                                  │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  SCREEN 1: Problem Intake                                                       │
+│  ───────────────────────────                                                    │
+│  1. Type a pricing scenario or click "Raising prices 20%"                       │
+│  2. Select a primary driver (revenue, margin, competitive, fairness)            │
+│  3. Choose involvement level (High-touch, Checkpoint, Executive)                │
+│  4. Click "Continue"                                                             │
+│     → Transitions to Screen 2                                                    │
+│                                                                                  │
+│  SCREEN 2: Context Checklist                                                    │
+│  ───────────────────────────────                                                │
+│  1. Click "Upload" on any data item to mock-upload a file                       │
+│  2. Watch status change from ○ (missing) to ✓ (uploaded)                        │
+│  3. Notice items marked as ⊘ (blocked) can't be changed                         │
+│  4. Click "Continue with gaps" (visible even if data missing)                   │
+│     → Transitions to Screen 3                                                    │
+│                                                                                  │
+│  SCREEN 3: Plan Review                                                          │
+│  ────────────────────────                                                       │
+│  1. Click phase headers (+/-) to expand/collapse task lists                     │
+│  2. See task owners: [SYSTEM], [USER], [COLLABORATIVE]                         │
+│  3. Notice orange gap badges (flagging assumptions)                             │
+│  4. See time estimates per phase                                                │
+│  5. Click "Approve Plan & Start"                                                │
+│     → Transitions to Screen 4                                                    │
+│                                                                                  │
+│  SCREEN 4: Live Workspace ⭐ MOST VISUAL                                         │
+│  ───────────────────────────────────────                                        │
+│  1. LEFT SIDEBAR: Watch progress bars fill in real-time                         │
+│     • Blue bar = current phase (animated)                                       │
+│     • Green bar = completed phases                                              │
+│     • Percentage shows progress (0% → 100%)                                     │
+│                                                                                  │
+│  2. CENTER: Current activity card shows what system is doing                    │
+│     • "Currently working on: Segment Analysis"                                  │
+│     • "View progress details" link                                              │
+│                                                                                  │
+│  3. RIGHT: Artifact preview cards (click to expand)                             │
+│     • Decision Memo 📝 (60% complete)                                           │
+│     • Revenue Model 📊 (40% complete)                                           │
+│     • FAQ 💬 (20% complete)                                                     │
+│     • Roadmap 🗺️ (10% complete)                                                 │
+│     • Sections show: ✓ done, ⟳ in-progress, ○ queued                           │
+│                                                                                  │
+│  4. INTERACTIONS:                                                               │
+│     • Click artifact cards to expand sections                                   │
+│     • Watch section statuses change (queued → in-progress → done)              │
+│     • Takes ~30 seconds for completion                                          │
+│     • "View progress details" → Checkpoint screen                               │
+│     • When done: "View Final Package" button appears                            │
+│                                                                                  │
+│  SCREEN 5: Checkpoint Review                                                    │
+│  ───────────────────────────────                                                │
+│  1. Read context card: "What System Just Found"                                 │
+│  2. Select 1 or more options with checkboxes                                    │
+│  3. See "Impact" preview showing consequences                                   │
+│  4. Check "Confidence Level" (78% based on available data)                      │
+│  5. See "Data Used" (lists which files informed this)                           │
+│  6. Click "Continue with selected" OR "I need to think"                         │
+│     → Returns to Screen 4 (or continues to Screen 6)                             │
+│                                                                                  │
+│  SCREEN 6: Escalation / Missing Data                                            │
+│  ────────────────────────────────────                                           │
+│  1. Read problem statement (red box with blocker)                               │
+│  2. Click "Why this matters" to expand details                                  │
+│  3. Select one of three options:                                                │
+│     • Use industry benchmark (fast, lower accuracy, -20% confidence)            │
+│     • Provide proxy data (higher accuracy, +2 hours)                            │
+│     • Pause and gather data (best accuracy, +2-5 days)                          │
+│  4. See tradeoffs: Confidence Impact, Timeline Impact                           │
+│  5. Click "Proceed with selection"                                              │
+│     → Returns to Screen 4                                                        │
+│                                                                                  │
+│  SCREEN 7: Final Package                                                        │
+│  ────────────────────────                                                       │
+│  1. Click deliverable cards to select/deselect:                                 │
+│     • Decision Memo 📝 (Executive summary)                                      │
+│     • Revenue Model 📊 (Scenarios & analysis)                                   │
+│     • FAQ 💬 (Internal & customer Q&A)                                          │
+│     • Implementation Roadmap 🗺️ (Timeline & phases)                             │
+│  2. Meta-documents auto-included:                                               │
+│     • Decision Log (what was decided, when, by whom)                            │
+│     • Assumption Registry (what could invalidate this)                          │
+│     • Confidence Report (color-coded by section)                                │
+│  3. Read sample Decision Memo preview                                           │
+│  4. Click "Select All" / "Select None" to toggle all                            │
+│  5. Click "Download Package" (shows alert with file list)                       │
+│  6. Click "Start Over" to return to Intake                                      │
+│                                                                                  │
+│  SCREEN 8: Role Reference (Available on Any Screen)                             │
+│  ──────────────────────────────────────────────────                             │
+│  1. Click blue "?" button (bottom-right) on any screen (except Intake)          │
+│  2. Modal shows three sections:                                                 │
+│     • 🤖 Agent Responsibilities (8 items - analysis, modeling, drafting)        │
+│     • 👤 Your Responsibilities (5 items - strategy, judgment, approvals)        │
+│     • 🚫 Can't Automate (5 items - meetings, interviews, legal)                │
+│  3. Click X or click outside modal to close                                     │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ KEY DESIGN FEATURES                                                              │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  🎨 Visual Design                                                               │
+│  ├─ Dark slate background (slate-900 → slate-950 gradient)                     │
+│  ├─ White text for high contrast                                                │
+│  ├─ Blue/indigo accents (primary actions)                                       │
+│  ├─ Green for success, orange for warnings, red for errors                      │
+│  ├─ DM Sans font (modern, clean)                                                │
+│  └─ Hover states on all interactive elements                                    │
+│                                                                                  │
+│  ⚡ Animations                                                                   │
+│  ├─ Fade in on mount (screens, cards)                                           │
+│  ├─ Slide up entrance (initial={{ y: 20 }})                                     │
+│  ├─ Scale on hover (cards lift up)                                              │
+│  ├─ Progress bar animations (smooth fill)                                       │
+│  └─ Smooth transitions on all state changes                                     │
+│                                                                                  │
+│  📐 Layout                                                                      │
+│  ├─ Workspace uses sidebar + content (left nav, center work, right artifacts)  │
+│  ├─ Other screens centered with max-width                                       │
+│  ├─ Generous spacing (p-8, gap-6, space-y-8)                                    │
+│  ├─ Grid layouts for cards (responsive: 1 col mobile, 2-3 cols desktop)        │
+│  └─ Collapsible sections for complex information                                │
+│                                                                                  │
+│  🎯 Information Hierarchy                                                       │
+│  ├─ Large headings (text-2xl, font-bold)                                        │
+│  ├─ Secondary text in slate-400 (light gray)                                    │
+│  ├─ Icons for quick visual recognition                                          │
+│  ├─ Color coding for meaning (blue, green, orange, red)                         │
+│  ├─ Progress bars for status at a glance                                        │
+│  └─ Badges for quick labels ([SYSTEM], [USER], ✓, ⟳, ○)                       │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ QUICK FLOW OVERVIEW                                                              │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│   START                                                                          │
+│     │                                                                            │
+│     ▼                                                                            │
+│  ┌─────────────────┐                                                            │
+│  │  1. INTAKE      │  Describe situation, set involvement level                 │
+│  └────────┬────────┘                                                            │
+│           │ Continue                                                            │
+│           ▼                                                                      │
+│  ┌─────────────────┐                                                            │
+│  │  2. CHECKLIST   │  Upload available data, identify gaps                      │
+│  └────────┬────────┘                                                            │
+│           │ Continue                                                            │
+│           ▼                                                                      │
+│  ┌─────────────────┐                                                            │
+│  │  3. PLAN        │  Review & approve execution plan                           │
+│  └────────┬────────┘                                                            │
+│           │ Approve                                                             │
+│           ▼                                                                      │
+│  ┌─────────────────┐                                                            │
+│  │  4. WORKSPACE   │  Watch real-time progress ⭐                              │
+│  │  (LIVE WORK)    │  • Progress bars fill                                      │
+│  │                 │  • Artifacts build                                         │
+│  │                 │  • Takes ~30 seconds                                       │
+│  └────┬─────────┬──┘                                                            │
+│       │         │                                                               │
+│  Details │        └─→ Completed                                                 │
+│       │           │                                                             │
+│       ▼           ▼                                                              │
+│  ┌─────────────────┐                                                            │
+│  │  5. CHECKPOINT  │  Make strategic decision                                   │
+│  │  (LOOP BACK)    │  ↓                                                         │
+│  └────────┬────────┘  May return to Workspace                                   │
+│           │                                                                     │
+│           ├─→ (6. ESCALATION - handle blockers) ─┐                             │
+│           │                                        │                            │
+│           └────────────────────────────────────────┘                            │
+│                    │                                                            │
+│                    ▼                                                            │
+│           ┌─────────────────┐                                                   │
+│           │  7. FINAL       │  Review & download deliverables                   │
+│           │  PACKAGE        │                                                   │
+│           └────────┬────────┘                                                   │
+│                    │                                                            │
+│           Download │  Start Over                                                │
+│                    ▼                                                            │
+│                   END                                                           │
+│                                                                                  │
+│  ALWAYS AVAILABLE:                                                              │
+│  • Blue "?" button (Role Reference modal)                                       │
+│  • Shows who (AI/human) owns each task                                          │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ TECHNOLOGY STACK                                                                 │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  Next.js 14.2 .................. Framework & routing                            │
+│  React 18 ...................... UI components & state                          │
+│  TypeScript .................... Type safety                                     │
+│  Tailwind CSS 4 ................ Styling & theming                              │
+│  Framer Motion 12 .............. Animations & interactions                      │
+│  DM Sans (Google Fonts) ........ Typography                                     │
+│  next-themes ................... Dark mode support                              │
+│                                                                                  │
+│  Project Structure:                                                             │
+│  ├─ components/screens/ ........ 8 screen components                            │
+│  ├─ lib/context.tsx ............ Workflow state (React Context)                 │
+│  ├─ lib/mock-data.ts ........... Sample data for prototyping                    │
+│  ├─ lib/types.ts ............... TypeScript interfaces                          │
+│  └─ app/ ....................... Next.js app directory                          │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ HOW TO RUN                                                                       │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  1. Start the development server:                                               │
+│     $ npm run dev                                                                │
+│                                                                                  │
+│  2. Open in browser:                                                            │
+│     http://localhost:3000                                                       │
+│                                                                                  │
+│  3. Explore all 8 screens in order or jump between them                         │
+│                                                                                  │
+│  4. Read documentation:                                                         │
+│     • QUICK_START.md - Running guide & scenarios                                │
+│     • PROTOTYPE.md - Deep dive into design & features                           │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+
+✨ Fully committed to git - ready to demo or extend! ✨
