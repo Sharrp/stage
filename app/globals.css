@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+:root {
   /* Warm & Clean color palette - Light Mode */
   --color-background: #faf7f5;
   --color-foreground: #3d3229;
@@ -25,32 +25,6 @@
 
   /* Font family */
   --font-family-sans: var(--font-dm), system-ui, sans-serif;
-}
-
-.dark {
-  @theme {
-    /* Warm & Clean color palette - Dark Mode */
-    --color-background: #1c1714;
-    --color-foreground: #e8e0d8;
-    --color-card: #27221e;
-    --color-card-foreground: #e8e0d8;
-    --color-primary: #f2926d;
-    --color-primary-foreground: #1c1714;
-    --color-secondary: #2d2823;
-    --color-secondary-foreground: #e8e0d8;
-    --color-muted: #3a342e;
-    --color-muted-foreground: #a89888;
-    --color-accent: #33292c;
-    --color-accent-foreground: #f2926d;
-    --color-border: #3a342e;
-    --color-ring: #f2926d;
-
-    /* Warm shadows - Dark Mode */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-  }
 }
 
 * {
