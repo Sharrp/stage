@@ -57,6 +57,17 @@ export interface ContextItem {
   addedAt: number
 }
 
+export interface WorkspaceState {
+  currentPhase: number
+  phaseProgress: number
+  artifacts: Artifact[]
+  escalationShown: boolean
+  escalationResolved: boolean
+  checkpointShown: boolean
+  checkpointResolved: boolean
+  isComplete: boolean
+}
+
 export interface WorkflowState {
   screen: ScreenType
   intake?: IntakeData
@@ -66,6 +77,7 @@ export interface WorkflowState {
   currentPhase?: string
   checkpointData?: unknown
   contextItems?: ContextItem[]
+  workspaceState?: WorkspaceState
 }
 
 export interface CheckpointPrompt {

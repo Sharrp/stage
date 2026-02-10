@@ -36,15 +36,17 @@ const mockCheckpoint: CheckpointPrompt = {
 }
 
 export function CheckpointScreen() {
-  const { goToScreen } = useWorkflow()
+  const { goToScreen, updateWorkspaceState } = useWorkflow()
   const [selected, setSelected] = useState<string[]>(['enterprise', 'mid-market'])
   const [showPause, setShowPause] = useState(false)
 
   const handleContinue = () => {
+    updateWorkspaceState({ checkpointResolved: true })
     goToScreen('workspace')
   }
 
   const handlePause = () => {
+    updateWorkspaceState({ checkpointResolved: true })
     goToScreen('workspace')
   }
 

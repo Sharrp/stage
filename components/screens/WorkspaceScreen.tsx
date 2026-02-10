@@ -8,32 +8,69 @@ import { Artifact, PlanPhase } from '@/lib/types'
 import { StepIndicator } from '../StepIndicator'
 
 export function WorkspaceScreen() {
-  const { goToScreen, setArtifacts } = useWorkflow()
-  const [artifacts, setLocalArtifacts] = useState<Artifact[]>(initialArtifacts)
-  const [currentPhase, setCurrentPhase] = useState(0)
-  const [phaseProgress, setPhaseProgress] = useState(0)
+  const { state, goToScreen, setArtifacts, updateWorkspaceState } = useWorkflow()
   const [expandedArtifact, setExpandedArtifact] = useState<string | null>(null)
 
-  // Simulate progress (3x faster)
+  // Initialize workspace state on first render
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPhaseProgress((p) => {
-        if (p >= 95) {
-          // Move to next phase or complete
-          setCurrentPhase((cp) => {
-            if (cp >= generatedPlan.length - 1) {
-              return cp // Stay at last phase
-            }
-            return cp + 1
-          })
-          return 0
-        }
-        return p + Math.random() * 75
+    if (!state.workspaceState) {
+      updateWorkspaceState({
+        currentPhase: 0,
+        phaseProgress: 0,
+        artifacts: initialArtifacts,
+        escalationShown: false,
+        escalationResolved: false,
+        checkpointShown: false,
+        checkpointResolved: false,
+        isComplete: false,
       })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const workspaceState = state.workspaceState || {
+    currentPhase: 0,
+    phaseProgress: 0,
+    artifacts: initialArtifacts,
+    escalationShown: false,
+    escalationResolved: false,
+    checkpointShown: false,
+    checkpointResolved: false,
+    isComplete: false,
+  }
+
+  const isPaused =
+    (workspaceState.escalationShown && !workspaceState.escalationResolved) ||
+    (workspaceState.checkpointShown && !workspaceState.checkpointResolved)
+
+  // Simulate progress (2x slower - 600ms interval)
+  useEffect(() => {
+    if (isPaused || workspaceState.isComplete) return
+
+    const interval = setInterval(() => {
+      const currentProgress = workspaceState.phaseProgress
+      const currentPhase = workspaceState.currentPhase
+
+      if (currentProgress >= 95) {
+        // Move to next phase or complete
+        if (currentPhase >= generatedPlan.length - 1) {
+          updateWorkspaceState({ isComplete: true })
+          return
+        }
+        updateWorkspaceState({
+          currentPhase: currentPhase + 1,
+          phaseProgress: 0,
+        })
+      } else {
+        // Update phase progress
+        updateWorkspaceState({
+          phaseProgress: currentProgress + Math.random() * 75,
+        })
+      }
 
       // Simulate artifact progress
-      setLocalArtifacts((arts) =>
-        arts.map((art) => {
+      updateWorkspaceState({
+        artifacts: workspaceState.artifacts.map((art) => {
           const newProgress = Math.min(100, art.progress + Math.random() * 45)
           const sectionsWithProgress = art.sections.map((section) => {
             if (section.status === 'done') return section
@@ -46,23 +83,54 @@ export function WorkspaceScreen() {
             return section
           })
           return { ...art, progress: newProgress, sections: sectionsWithProgress }
-        })
-      )
-    }, 300)
+        }),
+      })
+    }, 600)
 
     return () => clearInterval(interval)
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPaused, workspaceState.phaseProgress, workspaceState.currentPhase, workspaceState.artifacts, workspaceState.isComplete])
+
+  // Trigger escalation when phase 1 reaches 50% progress
+  useEffect(() => {
+    if (
+      workspaceState.currentPhase === 1 &&
+      workspaceState.phaseProgress >= 50 &&
+      !workspaceState.escalationShown
+    ) {
+      updateWorkspaceState({ escalationShown: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceState.currentPhase, workspaceState.phaseProgress, workspaceState.escalationShown])
+
+  // Trigger checkpoint when phase 2 reaches 50% progress
+  useEffect(() => {
+    if (
+      workspaceState.currentPhase === 2 &&
+      workspaceState.phaseProgress >= 50 &&
+      !workspaceState.checkpointShown
+    ) {
+      updateWorkspaceState({ checkpointShown: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceState.currentPhase, workspaceState.phaseProgress, workspaceState.checkpointShown])
 
   const handleCheckpoint = () => {
     goToScreen('checkpoint')
   }
 
-  const handleFinish = () => {
-    setArtifacts(artifacts)
-    goToScreen('final')
+  const handleCheckpointBlock = () => {
+    goToScreen('checkpoint')
   }
 
-  const isComplete = currentPhase === generatedPlan.length - 1 && phaseProgress >= 90
+  const handleEscalation = () => {
+    goToScreen('escalation')
+  }
+
+  const handleFinish = () => {
+    setArtifacts(workspaceState.artifacts)
+    goToScreen('final')
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 text-gray-900">
@@ -71,7 +139,7 @@ export function WorkspaceScreen() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold">Workspace</h1>
-            <p className="text-sm text-gray-600 mt-2">Phase {currentPhase + 1} of {generatedPlan.length}</p>
+            <p className="text-sm text-gray-600 mt-2">Phase {workspaceState.currentPhase + 1} of {generatedPlan.length}</p>
           </div>
           <StepIndicator />
         </div>
@@ -88,9 +156,9 @@ export function WorkspaceScreen() {
                   <div
                     key={phase.id}
                     className={`rounded-lg border p-3 transition-all ${
-                      idx === currentPhase
+                      idx === workspaceState.currentPhase
                         ? 'border-blue-500 bg-blue-100'
-                        : idx < currentPhase
+                        : idx < workspaceState.currentPhase
                           ? 'border-green-500 bg-green-100'
                           : 'border-gray-300 bg-white'
                     }`}
@@ -98,16 +166,16 @@ export function WorkspaceScreen() {
                     <p className="font-medium text-sm text-gray-900">{phase.name}</p>
                     <div className="mt-2 w-full bg-gray-300 rounded-full h-1 overflow-hidden">
                       <motion.div
-                        className={`h-full ${idx === currentPhase ? 'bg-blue-500' : idx < currentPhase ? 'bg-green-500' : 'bg-gray-400'}`}
+                        className={`h-full ${idx === workspaceState.currentPhase ? 'bg-blue-500' : idx < workspaceState.currentPhase ? 'bg-green-500' : 'bg-gray-400'}`}
                         initial={{ width: 0 }}
                         animate={{
-                          width: idx === currentPhase ? `${phaseProgress}%` : idx < currentPhase ? '100%' : '0%',
+                          width: idx === workspaceState.currentPhase ? `${workspaceState.phaseProgress}%` : idx < workspaceState.currentPhase ? '100%' : '0%',
                         }}
                         transition={{ duration: 0.3 }}
                       />
                     </div>
                     <p className="text-xs text-gray-600 mt-2">
-                      {idx === currentPhase ? `${Math.round(phaseProgress)}%` : idx < currentPhase ? 'Complete' : 'Pending'}
+                      {idx === workspaceState.currentPhase ? `${Math.round(workspaceState.phaseProgress)}%` : idx < workspaceState.currentPhase ? 'Complete' : 'Pending'}
                     </p>
                   </div>
                 ))}
@@ -123,11 +191,63 @@ export function WorkspaceScreen() {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-4xl space-y-8"
           >
-            {/* Current Activity */}
-            <div className="rounded-lg border border-blue-300 bg-blue-50 p-6">
-              <p className="text-xs uppercase font-semibold text-blue-700 mb-3">Currently Working On</p>
-              <h2 className="text-2xl font-semibold mb-4 text-gray-900">{generatedPlan[currentPhase].name}</h2>
-              {!isComplete ? (
+            {/* Current Activity - Four conditional blocks */}
+            {workspaceState.checkpointShown && !workspaceState.checkpointResolved ? (
+              // Checkpoint block
+              <button
+                onClick={handleCheckpointBlock}
+                className="rounded-lg border-2 border-purple-500 bg-purple-50 p-6 text-left hover:border-purple-600 hover:bg-purple-100 transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl">🎯</span>
+                  <div className="flex-1">
+                    <p className="text-xs uppercase font-semibold text-purple-700 mb-3">Strategic Input Needed</p>
+                    <h2 className="text-2xl font-semibold mb-2 text-gray-900">Risk & Implementation Planning</h2>
+                    <p className="text-sm text-gray-700">
+                      Execution paused. We need your strategic input to finalize the plan.
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ) : workspaceState.escalationShown && !workspaceState.escalationResolved ? (
+              // Escalation block
+              <button
+                onClick={handleEscalation}
+                className="rounded-lg border-2 border-amber-500 bg-amber-50 p-6 text-left hover:border-amber-600 hover:bg-amber-100 transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl">⚠️</span>
+                  <div className="flex-1">
+                    <p className="text-xs uppercase font-semibold text-amber-700 mb-3">Action Required</p>
+                    <h2 className="text-2xl font-semibold mb-2 text-gray-900">Missing Data Blocker</h2>
+                    <p className="text-sm text-gray-700">
+                      Execution paused. We need additional data to proceed accurately.
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ) : workspaceState.isComplete ? (
+              // Deliverables block
+              <button
+                onClick={handleFinish}
+                className="rounded-lg border-2 border-green-500 bg-green-50 p-6 text-left hover:border-green-600 hover:bg-green-100 transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl">✓</span>
+                  <div className="flex-1">
+                    <p className="text-xs uppercase font-semibold text-green-700 mb-3">Execution Complete</p>
+                    <h2 className="text-2xl font-semibold mb-2 text-gray-900">Decision Package Ready</h2>
+                    <p className="text-sm text-gray-700">
+                      All phases complete. Review and download your deliverables.
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ) : (
+              // Normal "Currently Working On" block
+              <div className="rounded-lg border border-blue-300 bg-blue-50 p-6">
+                <p className="text-xs uppercase font-semibold text-blue-700 mb-3">Currently Working On</p>
+                <h2 className="text-2xl font-semibold mb-4 text-gray-900">{generatedPlan[workspaceState.currentPhase].name}</h2>
                 <div className="space-y-4">
                   <p className="text-sm text-gray-700">
                     System is analyzing your data, modeling scenarios, and generating supporting materials...
@@ -139,24 +259,14 @@ export function WorkspaceScreen() {
                     View progress details →
                   </button>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <p className="text-sm text-green-700">✓ All phases complete! Review and download your package.</p>
-                  <button
-                    onClick={handleFinish}
-                    className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 font-medium text-sm text-white transition-all"
-                  >
-                    View Final Package
-                  </button>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Artifact Previews */}
             <div>
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Live Artifacts</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {artifacts.map((artifact) => (
+                {workspaceState.artifacts.map((artifact) => (
                   <motion.div
                     key={artifact.id}
                     onClick={() => setExpandedArtifact(expandedArtifact === artifact.id ? null : artifact.id)}
