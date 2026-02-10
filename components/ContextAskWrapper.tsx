@@ -11,33 +11,55 @@ interface AskContext {
 }
 
 function getElementLabel(element: HTMLElement): string {
-  // Check for semantic labels
-  const heading = element.closest('h1, h2, h3, h4, h5, h6')
-  if (heading) return heading.textContent || 'this section'
-
-  const label = element.closest('label')
-  if (label) return label.textContent || 'this field'
-
-  // Check for title in parent chain
-  let current = element
-  while (current && current !== document.body) {
-    const title = current.getAttribute('title')
-    if (title) return title
-    const ariaLabel = current.getAttribute('aria-label')
-    if (ariaLabel) return ariaLabel
-    current = current.parentElement!
+  // For buttons, use their text content
+  if (element.tagName === 'BUTTON') {
+    const text = element.textContent?.trim() || ''
+    if (text) return text
   }
 
-  // Try to find nearby label or heading
-  current = element.parentElement!
-  while (current && current !== document.body) {
-    const heading = current.querySelector('h1, h2, h3, h4, h5, h6')
-    if (heading) return heading.textContent || 'this section'
-    current = current.parentElement!
+  // Check for direct title or aria-label
+  const title = element.getAttribute('title')
+  if (title) return title
+
+  const ariaLabel = element.getAttribute('aria-label')
+  if (ariaLabel) return ariaLabel
+
+  // For inputs, check associated label
+  if (element.tagName === 'INPUT' && element.id) {
+    const label = document.querySelector(`label[for="${element.id}"]`)
+    if (label) return label.textContent || 'this field'
   }
 
-  // Fall back to text content (first 50 chars)
-  const text = element.textContent?.trim() || ''
+  // Look for headings within the element (for cards/items)
+  const heading = element.querySelector('h1, h2, h3, h4, h5, h6')
+  if (heading) {
+    const headingText = heading.textContent?.trim() || ''
+    if (headingText && headingText.length > 3) return headingText
+  }
+
+  // Look for first <p> with font-medium/font-semibold (usually the title)
+  const titleParagraph = element.querySelector('p.font-medium, p.font-semibold, .font-medium, .font-semibold')
+  if (titleParagraph) {
+    const pText = titleParagraph.textContent?.trim() || ''
+    if (pText && pText.length > 3) return pText
+  }
+
+  // Get text content, limiting to avoid parent text
+  let text = ''
+
+  // For buttons/clickable elements, just use direct text
+  if (element.tagName === 'BUTTON' || element.classList.contains('cursor-pointer')) {
+    text = element.textContent?.trim() || ''
+  } else {
+    // For containers, collect text carefully
+    const firstParagraph = element.querySelector('p:first-of-type')
+    if (firstParagraph) {
+      text = firstParagraph.textContent?.trim() || ''
+    } else {
+      text = element.textContent?.trim() || ''
+    }
+  }
+
   if (text && text.length > 3) {
     const short = text.substring(0, 60).replace(/\n/g, ' ').trim()
     return short.length < 60 ? short : short.substring(0, 57) + '...'
@@ -47,31 +69,52 @@ function getElementLabel(element: HTMLElement): string {
 }
 
 function findMeaningfulElement(element: HTMLElement): HTMLElement {
-  // Start from clicked element and walk up to find meaningful container
+  // If it's already a good element, return it
+  if (
+    element.tagName === 'TEXTAREA' ||
+    element.tagName === 'BUTTON' ||
+    element.tagName === 'INPUT'
+  ) {
+    return element
+  }
+
+  // Walk up to find a meaningful container, but stop quickly
   let current = element
+  let levels = 0
+  const maxLevels = 4
 
-  // Walk up to find a container with meaningful content
-  while (current && current !== document.body) {
-    const text = current.textContent?.trim() || ''
-    const hasContent = text.length > 10
+  while (current && current !== document.body && levels < maxLevels) {
+    levels++
 
-    // Stop at common content boundaries
-    if (
-      hasContent &&
-      (current.tagName === 'TEXTAREA' ||
-        current.tagName === 'BUTTON' ||
-        current.tagName === 'INPUT' ||
-        current.classList.contains('rounded-lg') ||
-        current.classList.contains('bg-white') ||
-        current.classList.contains('bg-gray-50') ||
-        current.classList.contains('border'))
-    ) {
-      return current
+    // These are our stop conditions - item/card containers
+    const hasRoundedAndBorder =
+      current.classList.contains('rounded-lg') ||
+      current.classList.contains('rounded-xl') ||
+      current.classList.contains('rounded')
+
+    const hasBorder = current.classList.contains('border')
+
+    // Check if this looks like a card/item container
+    if (hasRoundedAndBorder && hasBorder) {
+      // Make sure it's not a huge container
+      const text = current.textContent?.trim() || ''
+      if (text.length > 5 && text.length < 500) {
+        return current
+      }
+    }
+
+    // Stop at form/section boundaries
+    if (current.tagName === 'FORM' || current.tagName === 'SECTION') {
+      // Don't return the form/section itself, we want the content
+      if (levels > 1) {
+        return element // Return original element if we've walked too far
+      }
     }
 
     current = current.parentElement!
   }
 
+  // If we've walked too far, return the original element
   return element
 }
 
