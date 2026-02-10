@@ -26,7 +26,7 @@ export function StepIndicator() {
       {/* Step counter */}
       <div className="flex items-center gap-2">
         <span className="text-sm font-semibold text-gray-700">
-          Step {currentStep.number} / {steps.length - 1}
+          Step {currentStep.number} / {steps.length}
         </span>
         <span className="text-xs text-gray-500">
           {currentStep.label}
@@ -35,7 +35,7 @@ export function StepIndicator() {
 
       {/* Progress bar */}
       <div className="hidden sm:flex items-center gap-1">
-        {steps.slice(0, -1).map((step, idx) => (
+        {steps.map((step, idx) => (
           <button
             key={step.screen}
             onClick={() => goToScreen(step.screen as any)}
