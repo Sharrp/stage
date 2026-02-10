@@ -6,6 +6,7 @@ import { useWorkflow } from '@/lib/context'
 import { IntakeData } from '@/lib/types'
 import { driverDescriptions, involvementLevelDescriptions } from '@/lib/mock-data'
 import { StepIndicator } from '../StepIndicator'
+import { BackButton } from '../BackButton'
 
 const quickStarts = [
   { label: 'Raising prices 20%', description: 'Simple price increase for existing model' },
@@ -185,6 +186,7 @@ export function IntakeScreen() {
 
             {/* Submit Button */}
             <div className="flex gap-4">
+              <BackButton />
               <button
                 type="submit"
                 disabled={!situation.trim()}

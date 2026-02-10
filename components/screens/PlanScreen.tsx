@@ -6,6 +6,7 @@ import { useWorkflow } from '@/lib/context'
 import { generatedPlan } from '@/lib/mock-data'
 import { PlanPhase } from '@/lib/types'
 import { StepIndicator } from '../StepIndicator'
+import { BackButton } from '../BackButton'
 
 export function PlanScreen() {
   const { goToScreen, setPlan } = useWorkflow()
@@ -124,12 +125,7 @@ export function PlanScreen() {
 
           {/* Actions */}
           <div className="flex gap-4 pt-8">
-            <button
-              onClick={() => goToScreen('checklist')}
-              className="rounded-lg border border-gray-400 px-6 py-3 font-medium text-gray-900 hover:bg-gray-100 transition-all"
-            >
-              Back
-            </button>
+            <BackButton />
             <button
               onClick={handleApprove}
               className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-medium text-white hover:from-blue-700 hover:to-blue-800 transition-all"

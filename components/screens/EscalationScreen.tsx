@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
 import { StepIndicator } from '../StepIndicator'
+import { BackButton } from '../BackButton'
 
 export function EscalationScreen() {
   const { goToScreen } = useWorkflow()
@@ -155,12 +156,7 @@ export function EscalationScreen() {
 
           {/* Actions */}
           <div className="flex gap-4 pt-8">
-            <button
-              onClick={() => goToScreen('workspace')}
-              className="rounded-lg border border-gray-400 px-6 py-3 font-medium text-gray-900 hover:bg-gray-100 transition-all"
-            >
-              Back
-            </button>
+            <BackButton />
             <button
               onClick={handleChoice}
               disabled={!selected}

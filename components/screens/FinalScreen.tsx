@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
 import { StepIndicator } from '../StepIndicator'
+import { BackButton } from '../BackButton'
 
 export function FinalScreen() {
   const { state, goToScreen, reset } = useWorkflow()
@@ -199,12 +200,7 @@ export function FinalScreen() {
 
           {/* Actions */}
           <div className="flex gap-4 pt-8">
-            <button
-              onClick={handleReset}
-              className="rounded-lg border border-gray-400 px-6 py-3 font-medium text-gray-900 hover:bg-gray-100 transition-all"
-            >
-              Start Over
-            </button>
+            <BackButton />
             <button
               onClick={handleDownload}
               className="flex-1 rounded-lg bg-gradient-to-r from-green-600 to-green-700 px-6 py-3 font-medium text-white hover:from-green-700 hover:to-green-800 transition-all flex items-center justify-center gap-2"

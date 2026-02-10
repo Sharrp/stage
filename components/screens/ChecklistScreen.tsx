@@ -6,6 +6,7 @@ import { useWorkflow } from '@/lib/context'
 import { checklistItems as initialItems } from '@/lib/mock-data'
 import { ChecklistItem } from '@/lib/types'
 import { StepIndicator } from '../StepIndicator'
+import { BackButton } from '../BackButton'
 
 export function ChecklistScreen() {
   const { goToScreen, setChecklist } = useWorkflow()
@@ -169,6 +170,7 @@ export function ChecklistScreen() {
 
             {/* Actions */}
             <div className="flex gap-4 pt-8">
+              <BackButton />
               <button
                 onClick={handleContinue}
                 className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-medium text-white hover:from-blue-700 hover:to-blue-800 transition-all"

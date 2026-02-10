@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useWorkflow } from '@/lib/context'
 import { CheckpointPrompt } from '@/lib/types'
 import { StepIndicator } from '../StepIndicator'
+import { BackButton } from '../BackButton'
 
 const mockCheckpoint: CheckpointPrompt = {
   id: 'segment-priority',
@@ -151,6 +152,7 @@ export function CheckpointScreen() {
           {/* Actions */}
           {!showPause ? (
             <div className="flex gap-4">
+              <BackButton />
               <button
                 onClick={() => setShowPause(true)}
                 className="rounded-lg border border-gray-400 px-6 py-3 font-medium text-gray-900 hover:bg-gray-100 transition-all"
