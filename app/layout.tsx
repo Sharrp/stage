@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
+import { ThemeProvider } from 'next-themes'
+import { WorkflowProvider } from '@/lib/context'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -9,8 +11,8 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Stage',
-  description: 'Next.js application',
+  title: 'Pricing Decision Assistant',
+  description: 'AI-assisted decision support for complex pricing changes',
 }
 
 export default function RootLayout({
@@ -20,8 +22,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmSans.variable}`} suppressHydrationWarning>
-      <body className="font-sans antialiased">
-        {children}
+      <body className="font-sans antialiased bg-slate-950">
+        <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
+          <WorkflowProvider>
+            {children}
+          </WorkflowProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
