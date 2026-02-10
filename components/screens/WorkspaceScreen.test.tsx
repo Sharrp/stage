@@ -15,6 +15,7 @@ describe('WorkspaceScreen', () => {
       state: { screen: 'workspace' },
       goToScreen: vi.fn(),
       setArtifacts: vi.fn(),
+      updateWorkspaceState: vi.fn(),
     })
   })
 
